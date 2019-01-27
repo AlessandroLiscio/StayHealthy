@@ -1,0 +1,139 @@
+{
+  "configVersion": 1,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/index.html",
+        "/main.f8b1514785dd4a4d39de.js",
+        "/polyfills.27c2b0cf462e886c6017.js",
+        "/runtime.ec2944dd8b20ec099bf3.js",
+        "/scripts.9246b5e29cceb7b1353a.js",
+        "/styles.cce1180bfcc25d75ec46.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/img/logo.jpeg",
+        "/assets/img/logo.png",
+        "/favicon.ico",
+        "/fontawesome-webfont.674f50d287a8c48dc19b.eot",
+        "/fontawesome-webfont.912ec66d7572ff821749.svg",
+        "/fontawesome-webfont.af7ae505a9eed503f8b8.woff2",
+        "/fontawesome-webfont.b06871f281fee6b241d6.ttf",
+        "/fontawesome-webfont.fee66e712a8a08eef580.woff"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "patient",
+      "patterns": [
+        "\\/api\\/patient"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "doctor",
+      "patterns": [
+        "\\/api\\/doctor"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "survey",
+      "patterns": [
+        "\\/api\\/survey",
+        "\\/api\\/patient_survey"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "miband",
+      "patterns": [
+        "\\/api\\/miband"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "messages",
+      "patterns": [
+        "\\/api\\/user\\/messages"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/assets/icons/icon-128x128.png": "e535187c51336ee6353eb9b8c1036f16df4909ef",
+    "/assets/icons/icon-144x144.png": "416c1c27bf5904e4245cb8010abd8eb1b52930cd",
+    "/assets/icons/icon-152x152.png": "89fef19506a92d664d643b15c4877e3a79d46be7",
+    "/assets/icons/icon-192x192.png": "2c623ba6cf81edc7b854f2d2949ed461cb7fc6de",
+    "/assets/icons/icon-384x384.png": "0d915c062602398100e09c205221bbe5ae4adf7d",
+    "/assets/icons/icon-512x512.png": "991fb73002aa1f357d67cb651afd2f6e94dd1bb0",
+    "/assets/icons/icon-72x72.png": "a9e13a826684f83b6808c5e7b26a7cec93f0c0b9",
+    "/assets/icons/icon-96x96.png": "20b558d0462dda35e8e0703c94d80fab68eef674",
+    "/assets/img/logo.jpeg": "837b0c936950cf254c81406a13b8d483c29424bc",
+    "/assets/img/logo.png": "f7ce071f688faf3ba14e43078ec7a50a1d4c6e76",
+    "/favicon.ico": "127fe8109bdddf97d2b385631d74889032e7e734",
+    "/fontawesome-webfont.674f50d287a8c48dc19b.eot": "d980c2ce873dc43af460d4d572d441304499f400",
+    "/fontawesome-webfont.912ec66d7572ff821749.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
+    "/fontawesome-webfont.af7ae505a9eed503f8b8.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
+    "/fontawesome-webfont.b06871f281fee6b241d6.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
+    "/fontawesome-webfont.fee66e712a8a08eef580.woff": "28b782240b3e76db824e12c02754a9731a167527",
+    "/index.html": "118d2e2313dd530c119c6b0f89d7009c98c68c4e",
+    "/main.f8b1514785dd4a4d39de.js": "ddf3d48daadd50976f16754e8998173c47b6d0de",
+    "/polyfills.27c2b0cf462e886c6017.js": "1fde91780fbefc810661e36166449cc717dfbf5c",
+    "/runtime.ec2944dd8b20ec099bf3.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
+    "/scripts.9246b5e29cceb7b1353a.js": "7f8b485ca78025038e1bde57882cb8b50ae048ae",
+    "/styles.cce1180bfcc25d75ec46.css": "bb9492669e29f9d9e9f5e421f9c448a131664a47"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}

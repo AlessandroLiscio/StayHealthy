@@ -1,0 +1,47 @@
+choices:
+    |_ (PK) id: text (NN)
+    |_ text: text (NN)
+    |_ value: integer
+
+doctors:
+    |_ (PK) ssn:text (NN)-> (FK) users.username
+    |_ first_name: name (NN)
+    |_ last_name: name (NN)
+    |_ date_of_birth: date (NN)
+
+miband:
+    |_ (PK) patient: text (NN)
+    |_ (PK) timestamp: timestamp without time zone (NN)
+    |_ activity: text (NN)
+    |_ intensity: integer (NN)
+    |_ steps: integer (NN)
+    |_ heart_rate: integer (NN)
+
+patients:
+    |_ (PK) ssn (NN) -> (FK) users.username
+    |_ first_name: name (NN)
+    |_ last_name: name (NN)
+    |_ date_of_birth: date  (NN)
+    |_ doctor_ssn: text (NN) -> (FK) doctors.ssn
+    |_ last_fetch_date: timestamp without time zone (NN)
+
+patients_surveys:
+    |_ (PK) patient: text (NN) -> (FK) patients.ssn
+    |_ (PK) date: date (NN)
+    |_ survey_id: text (NN)
+    |_ answers: integer[]
+
+questions:
+    |_ (PK) id: text (NN)
+    |_ text: text (NN)
+    |_ choices: text[] (NN)
+
+surveys:
+    |_ (PK) id: text (NN)
+    |_ questions: text[] (NN)
+    |_ title: text
+
+users:
+    |_ (PK) (UNIQUE) username: text (NN)
+    |_ (PK) password: text (NN)
+    |_ role: role (NN)
