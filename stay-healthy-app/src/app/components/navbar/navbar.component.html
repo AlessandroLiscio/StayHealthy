@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayHealthy</title>
+</head>
+
+<body *ngIf = "isLoggedIn | async">
+  <nav class="navbar navbar-light navbar-expand-lg static-top">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/{{role}}" routerLinkActive="active">
+        <img class="img-fluid" src="assets/img/logo.png" width="50" id="logo">
+          <strong id="brand_title">
+            StayHealthy
+          </strong>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse bg-white"  data-toggle="collapse" data-target=".navbar-collapse.show" id="menu">
+        <ul *ngIf="role == 'patient'" class="navbar-nav ml-auto" routerLinkActive="active">
+          <li class="nav-item">
+              <a class="nav-link" routerLink="/patient">
+                <i class="fa fa-home"></i>
+                Home
+              </a>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/patient/survey">
+              <i class="fa fa-edit"></i>
+              Compila questionario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/patient/history">
+              <i class="fa fa-book"></i>
+              Storico
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/patient/messages">
+              <i class="fa fa-envelope"></i>
+              Messaggi
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="modal" data-target="#confirmation">
+              <i class="fa fa-user-times"></i>
+              Logout
+            </a>
+          </li>
+        </ul>
+        <ul *ngIf="role == 'doctor'"  class="navbar-nav ml-auto" routerLinkActive="active">
+          <li class="nav-item">
+              <a class="nav-link" routerLink="/doctor">
+                <i class="fa fa-home"></i>
+                Home
+              </a>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/doctor/messages">
+              <i class="fa fa-envelope"></i>
+              Messaggi
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="modal" data-target="#confirmation">
+              <i class="fa fa-user-times"></i>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmationTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Sei sicuro di voler effettuare il logout?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+          <button type="button" id="logout" class="btn btn-default" data-dismiss="modal" (click)="onLogout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

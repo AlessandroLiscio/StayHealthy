@@ -1,0 +1,87 @@
+
+  #miband_button {
+    background:rgb(216,45,113);
+    color: white;
+  }
+    .btn{
+        margin-right: 5px;
+    }
+    pre {
+      white-space: pre-wrap;
+  }
+
+  .no-messages{
+    clear:both;
+    padding-top: 100px; 
+  }
+
+  textarea {
+    resize:vertical;
+    width:100%;
+    height: 200px;
+  }
+
+  .object{
+    width: 100%;
+  }
+    /* ========================================================================
+     * MAIL
+     * ======================================================================== */
+     .container {
+        width: 80%;
+        margin: 0 auto;
+        float: none;
+    }
+    .table-email tr:first-child td {
+      border-top: none;
+    }
+    .table-email tr td {
+      vertical-align: top !important;
+    }
+    .table-email tr.unread, .table-email tr.selected {
+      background-color: #EEEEEE;
+    }
+    .table-email .media {
+      margin: 0px;
+      padding: 0px;
+      position: relative;
+    }
+    .table-email .media h4 {
+      margin: 0px;
+      font-size: 14px;
+    }
+    .table-email .media-meta {
+      font-size: 11px;
+      color: #999;
+      position: absolute;
+      right: 10px;
+    }
+    .table-email .media-meta {
+      top: 0px;
+    }
+    .table-email .email-summary strong {
+      color: #333;
+    }
+    .table-email .email-summary span {
+      line-height: 1;
+    }
+    .table-email .email-summary span.label {
+      padding: 1px 5px 2px;
+    }
+    .table-email .ckbox {
+      line-height: 0px;
+      margin-left: 8px;
+    }
+
+    .sender{
+        color: rgb(216,45,113);
+    }
+
+    @media (max-width: 576px) {
+        .container{
+            width: 100%;
+        }
+      }
+    
+    
+                                        

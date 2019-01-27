@@ -1,0 +1,85 @@
+{
+  "index": "/index.html",
+  "dataGroups": [{
+    "name": "patient",
+    "urls": [
+      "/api/patient"
+    ],
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": "3d"
+    }
+  },
+  {
+    "name": "doctor",
+    "urls": [
+      "/api/doctor"
+    ],
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": "3d"
+    }
+  },
+  {
+    "name": "survey",
+    "urls": [
+      "/api/survey",
+      "/api/patient_survey"
+    ],
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": "3d"
+    }
+  },
+  {
+    "name": "miband",
+    "urls": [
+      "/api/miband"
+    ],
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": "3d"
+    }
+  },
+  {
+    "name": "messages",
+    "urls": [
+      "/api/user/messages"
+    ],
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": "3d"
+    }
+  }],
+  "assetGroups": [{
+    "name": "app",
+    "installMode": "prefetch",
+    "resources": {
+      "files": [
+        "/index.html",
+        "/*.css",
+        "/*.js"
+      ]
+    }
+  }, {
+    "name": "assets",
+    "installMode": "lazy",
+    "updateMode": "prefetch",
+    "resources": {
+      "files": [
+        "/assets/**",
+        "/*.eot",
+        "/*.svg",
+        "/*.woff2",
+        "/*.ttf",
+        "/*.woff",
+        "/*.ico"
+      ]
+    }
+  }]
+}

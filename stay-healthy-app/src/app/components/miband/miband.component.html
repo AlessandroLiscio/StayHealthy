@@ -1,0 +1,78 @@
+<body class="component">
+    <div id="main_container">
+        <p *ngIf="patient">
+            Ciao, {{patient.first_name}} {{patient.last_name}}!
+        </p>
+        <div *ngIf="connection != 'CONNECTED' || authentication != 'AUTHENTICATED'">
+            <p>Sembra che nessuna MiBand sia connessa a quest'app</p>
+            <div>
+                <button class="btn btn-default" type="button" id="miband_button" (click)="scanDevices()">
+                    Cerca dispositivo
+                </button>
+                <div style="margin-top: 20px;">
+                    <p>
+                        {{connectionStatus}}<span *ngIf="connection && connection != 'CONNECTION ERROR' && connection != 'DISCONNECTED'"><i class="fa fa-spinner fa-pulse"></i></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!--connection == 'CONNECTED' && authentication == 'AUTHENTICATED'"-->
+        <div *ngIf="connection == 'CONNECTED' && authentication == 'AUTHENTICATED'">
+            <div>
+                <button class="btn btn-default" type="button" id="miband_button" (click)="fetch()">
+                    Invia dati
+                </button>
+                <button class="btn btn-default" type="button" id="miband_button"  data-toggle="modal" data-target="#disconnection">
+                    Disconnetti
+                </button>
+            </div>
+            <div style="margin-top: 20px;">
+                <p>
+                    {{fetchStatus}}<span *ngIf="fetchCode && (fetchCode == 'FETCH' || fetchCode == 'READY' || fetchCode == 'SUCCESS')"><i class="fa fa-spinner fa-pulse"></i></span>
+                </p>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6" style="text-align: center;">
+                        <div class="box">
+                            <i *ngIf="batteryLevel >= 80" class="fa fa-battery-full fa-3x" id="icon"></i>
+                            <i *ngIf="batteryLevel >= 60 && batteryLevel < 80" class="fa fa-battery-three-quarters fa-3x" id="icon"></i>
+                            <i *ngIf="batteryLevel >= 40 && batteryLevel < 60" class="fa fa-battery-half fa-3x" id="icon"></i>
+                            <i *ngIf="batteryLevel >= 20 && batteryLevel < 40" class="fa fa-battery-quarter fa-3x" id="icon"></i>
+                            <i *ngIf="batteryLevel >= 0 && batteryLevel < 20" class="fa fa-battery-empty fa-3x" id="icon"></i>
+                            <h3>Batteria</h3>
+                            <p>{{batteryLevel}}%</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="text-align: center;">
+                        <div class="box">
+                            <i class="fa fa-calendar fa-3x" id="icon"></i>
+                            <h3>Ultimo invio dati</h3>
+                            <p *ngIf="patient">{{lastFecthDate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<div class="modal fade" id="disconnection" tabindex="-1" role="dialog" aria-labelledby="confirmationTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Sei sicuro di voler disconnettere il dispositivo?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+          <button type="button" id="miband_button" class="btn btn-default" data-dismiss="modal" (click)="disconnect()">Disconnetti</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,3 @@
+export const ERROR = "AUTHENTICATION ERROR";
+export const NO_AUTH = "NOT AUTHENTICATED";
+export const AUTH = "AUTHENTICATED";

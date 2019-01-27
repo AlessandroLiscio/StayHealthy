@@ -1,0 +1,18 @@
+body{
+    text-align:center;
+}
+
+
+.col-centered{
+    padding-top: 15px; 
+    margin: 0 auto;
+    float: none;
+    width: 300px;
+}
+
+.survey{
+    padding-top: 15px; 
+    margin: 0 auto;
+    float: none;
+    width: 80%;
+}

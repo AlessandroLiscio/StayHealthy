@@ -1,0 +1,26 @@
+#main_container {
+    text-align:center;
+  }
+  
+  #miband_button {
+    background:rgb(216,45,113);
+    color: white;
+  }
+  
+  .info{
+    text-align: start;
+  }
+
+  #battery_img{
+    width: 30px;
+  }
+
+  .box{
+    text-align: center;
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+
+  #icon{
+    color:rgb(216,45,113);
+  }

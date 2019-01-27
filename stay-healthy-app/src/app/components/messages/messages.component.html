@@ -1,0 +1,134 @@
+<body>
+  <div class="container">
+    <div class=" pull-right">
+      <button class="btn" id="miband_button" data-toggle="modal" data-target="#writeNewMessage"><i class="fa fa-pencil"></i> Scrivi</button>
+    </div>
+    <div *ngIf="incomingMessages.length == 0" class="container text-center no-messages">
+      <p >Nessun messaggio in arrivo</p>
+    </div>
+    <table *ngIf="incomingMessages.length != 0" class="table table-hover table-email">
+      <thead>
+        <tr> 
+          <td style="width: 10%;"></td>
+          <td style="width: 90%;"></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let message of incomingMessages">
+          <td>
+            <div class="ckbox ckbox-theme">
+              <button class="btn" id="miband_button" data-toggle="modal" data-target="#deleteConfirmation" (click)="selectMessage(message)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>
+          <td>
+            <div class="media" (click)="changeCurrentMessage(message.message)" data-toggle="modal" data-target="#messageDetails">
+
+              <div class="media-body">
+                <h4 class="sender">{{message.message.sender}}</h4>
+                <p class="email-summary"><strong>{{message.message.object}}</strong></p>
+                <span class="media-meta">{{message.prettyDate}}</span>
+                
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+
+<div *ngIf="currentMessage" class="modal fade" id="messageDetails" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h3>{{currentMessage.object}}</h3>
+        <p>{{currentMessage.sender}}</p>
+        <pre>{{currentMessage.content}}</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+        <button type="button" id="miband_button" class="btn btn-default" data-dismiss="modal" data-toggle="modal"
+          data-target="#reply">Rispondi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="currentMessage" class="modal fade" id="reply" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <h3>{{currentMessage.object}}</h3>
+          <p>A: {{currentMessage.sender}}</p>
+          <div>
+            <textarea [(ngModel)]="newMessage.content" name="content"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+        <button type="button" id="miband_button" class="btn btn-default" data-dismiss="modal" (click)="sendMessage(currentMessage.sender, currentMessage.object)">Rispondi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="writeNewMessage" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <p *ngIf="patientUser">A: {{patientUser.doctor.doctor_ssn}}</p>
+          <input *ngIf="doctorUser" class="object" type="text" placeholder="A:" (selectItem)="selectReceiver($event)" name="receiver"[resultFormatter]="formatMatches"
+          [inputFormatter]="formatMatches" [ngbTypeahead]="search" >
+          <input class="object" type="text" placeholder="Oggetto" [(ngModel)]="newMessage.object" name="object">
+          <div>
+            <textarea [(ngModel)]="newMessage.content" name="content"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+        <button type="button" id="miband_button" class="btn btn-default" data-dismiss="modal" (click)="sendMessage()">Invia</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmation" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler eliminare i messaggi selezionati?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+        <button type="button" id="miband_button" class="btn btn-default" data-dismiss="modal" (click)="deleteMessage()">Elimina</button>
+      </div>
+    </div>
+  </div>
+</div>
