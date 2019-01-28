@@ -107,8 +107,6 @@ module.exports = function (app, passport) {
     //--------------------------------------------------------APPLICATION------------------------------------------
     var path = require('path');
     app.get(/^((?!\/api).)*$/, (req: Request, res: Response, next) => {
-        console.log("HEY")
-        console.log(req.originalUrl)
         res.sendFile(path.join(__dirname, '../public/index.html'));
     })
 
