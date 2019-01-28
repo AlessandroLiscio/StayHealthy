@@ -54,7 +54,7 @@ app.use(passport.session()); // persistent login sessions
 require('./routes.ts')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
- https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 3000'));
+ https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 443'));
  app.listen(80, ()=> console.log("Listening on port 80"));
 //app.listen(process.env.PORT);
 //console.log('Server listening on port: ' + process.env.PORT);

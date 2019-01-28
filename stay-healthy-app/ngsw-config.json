@@ -48,7 +48,7 @@
   {
     "name": "messages",
     "urls": [
-      "/api/user/messages"
+      "/api/messages/user"
     ],
     "cacheConfig": {
       "strategy": "freshness",

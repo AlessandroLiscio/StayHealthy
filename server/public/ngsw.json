@@ -8,11 +8,11 @@
       "updateMode": "prefetch",
       "urls": [
         "/index.html",
-        "/main.f8b1514785dd4a4d39de.js",
-        "/polyfills.27c2b0cf462e886c6017.js",
+        "/main.061c916899e1305037dc.js",
+        "/polyfills.c20120e9cdc3697b7342.js",
         "/runtime.ec2944dd8b20ec099bf3.js",
-        "/scripts.9246b5e29cceb7b1353a.js",
-        "/styles.cce1180bfcc25d75ec46.css"
+        "/scripts.63bf3b0393d7bda0096f.js",
+        "/styles.bdd2899dc74dc56e7023.css"
       ],
       "patterns": []
     },
@@ -33,7 +33,7 @@
         "/assets/img/logo.png",
         "/favicon.ico",
         "/fontawesome-webfont.674f50d287a8c48dc19b.eot",
-        "/fontawesome-webfont.912ec66d7572ff821749.svg",
+        "/fontawesome-webfont.acf3dcb7ff752b5296ca.svg",
         "/fontawesome-webfont.af7ae505a9eed503f8b8.woff2",
         "/fontawesome-webfont.b06871f281fee6b241d6.ttf",
         "/fontawesome-webfont.fee66e712a8a08eef580.woff"
@@ -86,7 +86,7 @@
     {
       "name": "messages",
       "patterns": [
-        "\\/api\\/user\\/messages"
+        "\\/api\\/messages\\/user"
       ],
       "strategy": "freshness",
       "maxSize": 100,
@@ -107,16 +107,16 @@
     "/assets/img/logo.png": "f7ce071f688faf3ba14e43078ec7a50a1d4c6e76",
     "/favicon.ico": "127fe8109bdddf97d2b385631d74889032e7e734",
     "/fontawesome-webfont.674f50d287a8c48dc19b.eot": "d980c2ce873dc43af460d4d572d441304499f400",
-    "/fontawesome-webfont.912ec66d7572ff821749.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
+    "/fontawesome-webfont.acf3dcb7ff752b5296ca.svg": "b5483b11f8ba213e733b5b8af9927a04fec996f6",
     "/fontawesome-webfont.af7ae505a9eed503f8b8.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
     "/fontawesome-webfont.b06871f281fee6b241d6.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
     "/fontawesome-webfont.fee66e712a8a08eef580.woff": "28b782240b3e76db824e12c02754a9731a167527",
-    "/index.html": "118d2e2313dd530c119c6b0f89d7009c98c68c4e",
-    "/main.f8b1514785dd4a4d39de.js": "ddf3d48daadd50976f16754e8998173c47b6d0de",
-    "/polyfills.27c2b0cf462e886c6017.js": "1fde91780fbefc810661e36166449cc717dfbf5c",
+    "/index.html": "9304000367f9e6296a2ec0e0b57206911bc26cda",
+    "/main.061c916899e1305037dc.js": "ddf3d48daadd50976f16754e8998173c47b6d0de",
+    "/polyfills.c20120e9cdc3697b7342.js": "1fde91780fbefc810661e36166449cc717dfbf5c",
     "/runtime.ec2944dd8b20ec099bf3.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
-    "/scripts.9246b5e29cceb7b1353a.js": "7f8b485ca78025038e1bde57882cb8b50ae048ae",
-    "/styles.cce1180bfcc25d75ec46.css": "bb9492669e29f9d9e9f5e421f9c448a131664a47"
+    "/scripts.63bf3b0393d7bda0096f.js": "7f8b485ca78025038e1bde57882cb8b50ae048ae",
+    "/styles.bdd2899dc74dc56e7023.css": "d780db77ee79714fac8c7a62d7b0fba23f15261a"
   },
   "navigationUrls": [
     {
