@@ -1,14 +1,17 @@
-import * as controllers from './controllers/controllers'
 import { Request, Response } from 'express'
 import { CustomError } from './models/customError'
-import { Patient, SerializedUser } from './models/models'
-import * as url from 'url';
+import { Patient } from './models/models'
+import * as controllers from './controllers/controllers'
+import * as url from 'url'
+import * as path from 'path'
 
 module.exports = function (app, passport) {
 
-    // variable used for the responses
+    // variables used for the responses
     var serverResponse: any
     var error: CustomError = new CustomError()
+
+    // initialize all the tables controllers
     var choiceCtrl = new controllers.ChoiceCtrl()
     var doctorCtrl = new controllers.DoctorCtrl()
     var messageCtrl = new controllers.MessageCtrl()
@@ -27,113 +30,103 @@ module.exports = function (app, passport) {
 
     //------------------------LOGIN RESPONSE MESSAGES--------------------------//
     function handleLoginResponse(res: Response, code: number, serverResponse: any) {
-        res.status(code).send({ ServerResponse: serverResponse });
+        res.status(code).send({ ServerResponse: serverResponse })
     }
 
-    //------------------------GET RESPONSE MESSAGES--------------------------//
-    function sendGetResponse(res: Response, serverResponse: any) {
-        // standard response message
-        let stdErrMsg = 'Error: could not find any result for input data.';
-        // if serverResponse has not been istantiated, return ErrorMessage
-        if (!serverResponse) {
-            res.status(500)
-                .send({ ErrorMessage: stdErrMsg });
-            return
+    function sendServerResponse(req: Request, res: Response, serverResponse: any) {
+        switch (req.method) {
+            //------------------------GET RESPONSE MESSAGES--------------------------//
+            case 'GET': {
+                // standard response message
+                let stdGetErrMsg = 'Error: could not find any result for input data.'
+                // if serverResponse has not been istantiated, return ErrorMessage
+                if (!serverResponse) {
+                    res.status(500).send({ ErrorMessage: stdGetErrMsg })
+                    return
+                }
+                // if serverResponse is a custom error, return it to show the error
+                if (serverResponse instanceof CustomError) {
+                    res.status(500).send({ ErrorMessage: serverResponse })
+                    return
+                }
+                // if serverResponse is an error, return it to show the error
+                if (serverResponse instanceof Error) {
+                    res.status(500).send(serverResponse)
+                    return
+                }
+                // else return it to show the data
+                res.status(200).send(serverResponse)
+                return
+            }
+            //------------------------POST RESPONSE MESSAGES--------------------------//
+            case 'POST': {
+                // standard response messages
+                let stdPostErrMsg = 'Error: could not update database with input data.'
+                let stdPostSuccessMsg = 'Success: data correctly added to the database'
+                // if serverResponse is an error, return it to show the error
+                if (serverResponse instanceof Error) {
+                    res.status(500).send({ ErrorMessage: serverResponse })
+                    return
+                }
+                // if serverResponse is a custom error, return it to show the error
+                if (serverResponse instanceof CustomError) {
+                    res.status(500).send({ ErrorMessage: serverResponse })
+                    return
+                }
+                // if serverResponse has been instantiated (and not an error), return SuccessMessage
+                if (serverResponse) {
+                    res.status(200).send({ SuccessMessage: stdPostSuccessMsg, ServerResponse: serverResponse })
+                    return
+                }
+                // else, return standar error message
+                res.status(500).send({ ErrorMessage: stdPostErrMsg })
+                return
+            }
+            //------------------------DELETE RESPONSE MESSAGES--------------------------//
+            case 'DELETE': {
+                // standard response message
+                let stdDeleteErrMsg = 'Error: could not delete input data.'
+                let stdDeleteSuccessMsg = 'Success: data correctly deleted from the database'
+                // if serverResponse is an error, return it to show the error
+                if (serverResponse instanceof Error) {
+                    res.status(500).send({ ErrorMessage: serverResponse })
+                    return
+                }
+                // if serverResponse is a custom error, return it to show the error
+                if (serverResponse instanceof CustomError) {
+                    res.status(500).send({ ErrorMessage: serverResponse })
+                    return
+                }
+                // if serverResponse has been instantiated (and not an error), return SuccessMessage
+                if (serverResponse) {
+                    res.status(200).send({ SuccessMessage: stdDeleteSuccessMsg })
+                    return
+                }
+                // else, return standar error message
+                res.status(500).send({ ErrorMessage: stdDeleteErrMsg })
+            }
+            default: {
+                return res.status(500).send({ ErrorMessage: 'Could not manage server response' })
+            }
         }
-        if (serverResponse instanceof CustomError) {
-            res.status(500)
-                .send({ ErrorMessage: serverResponse });
-            return
-        }
-        // if serverResponse is an error, return it to show the error
-        if (serverResponse instanceof Error) {
-            res.status(500)
-                .send(serverResponse)
-            return
-        }
-        // if serverResponse has been instantiated (and not an error), return it to show the data
-        else {
-            res.status(200)
-                .send(serverResponse);
-            return
-        }
-    }
-
-    //------------------------POST RESPONSE MESSAGES--------------------------//
-    function sendPostResponse(res: Response, serverResponse: any) {
-        // standard response messages
-        let stdErrMsg = 'Error: could not update database with input data.';
-        let stdSuccessMsg = 'Success: data correctly added to the database';
-        // if serverResponse is an error, return it to show the error
-        if (serverResponse instanceof Error) {
-            res.status(500)
-                .send({ ErrorMessage: serverResponse })
-            return
-        }
-        // if serverResponse is a string, send it as a custom error created from server
-        if (serverResponse instanceof CustomError) {
-            res.status(500)
-                .send({ ErrorMessage: serverResponse })
-            return
-        }
-        // if serverResponse has been instantiated (and not an error), return SuccessMessage
-        if (serverResponse) {
-            res.status(200)
-                .send({ SuccessMessage: stdSuccessMsg, ServerResponse: serverResponse })
-            return
-        }
-        // else, return standar error message
-        res.status(500)
-            .send({ ErrorMessage: stdErrMsg });
-    }
-
-    //------------------------DELETE RESPONSE MESSAGES--------------------------//
-    function sendDeleteResponse(res: Response, serverResponse: any) {
-        // standard response message
-        let stdErrMsg = 'Error: could not delete input data.';
-        let stdSuccessMsg = 'Success: data correctly deleted from the database';
-        // if serverResponse is an error, return it to show the error
-        if (serverResponse instanceof Error) {
-            res.status(500)
-                .send({ ErrorMessage: serverResponse })
-            return
-        }
-        // if serverResponse is a string, send it as a custom error created from server
-        if (serverResponse instanceof CustomError) {
-            res.status(500)
-                .send({ ErrorMessage: serverResponse })
-            return
-        }
-        // if serverResponse has been instantiated (and not an error), return SuccessMessage
-        if (serverResponse) {
-            res.status(200)
-                .send({ SuccessMessage: stdSuccessMsg })
-            return
-        }
-        // else, return standar error message
-        res.status(500)
-            .send({ ErrorMessage: stdErrMsg });
     }
 
     //--------------------------------------------------------APPLICATION------------------------------------------
-    var path = require('path');
     app.get(/^((?!\/api).)*$/, (req: Request, res: Response, next) => {
-        res.sendFile(path.join(__dirname, '../public/index.html'));
+        res.sendFile(path.join(__dirname, '../public/index.html'))
     })
 
     //------------------------------------------------------/api/login-------------------------------------------//
     // GET login
     app.get('/api/login', function (req: Request, res: Response) {
         if (req.isAuthenticated()) {
-            res.status(200)
-                .send({ SuccessMessage: 'Congrats, you are authenticated', User: req.user })
+            res.status(200).send({ SuccessMessage: 'Congrats, you are authenticated', User: req.user })
         }
         else {
-            res.status(200)
-                .send({ ErrorMessage: 'Damn, you are not authenticated' })
+            res.status(200).send({ ErrorMessage: 'Damn, you are not authenticated' })
         }
 
-    });
+    })
 
     //POST login
     app.post('/api/login', loginRedirect, function (req: Request, res: Response, next: any) {
@@ -146,13 +139,16 @@ module.exports = function (app, passport) {
             if (user) {
                 req.login(user, function (err) {
                     // if an error occurs in the login function, return the error
-                    if (err) { console.log(err); return handleLoginResponse(res, 500, 'error') }
+                    if (err) {
+                        console.log(err)
+                        return handleLoginResponse(res, 500, 'error')
+                    }
                     // if authenticated, return the user's role
-                    else handleLoginResponse(res, 200, req.user.role);
-                });
+                    else handleLoginResponse(res, 200, req.user.role)
+                })
             }
-        })(req, res, next);
-    });
+        })(req, res, next)
+    })
 
     //------------------------------------------------------/api/logout-------------------------------------------//
     //GET logout
@@ -162,7 +158,7 @@ module.exports = function (app, passport) {
                 .send({ ErrorMessage: 'You have to be logged in to log out' })
             return
         }
-        req.logout();
+        req.logout()
         if (!(req.isAuthenticated())) {
             res.status(200)
                 .clearCookie('connect.sid', { path: '/' })
@@ -171,458 +167,505 @@ module.exports = function (app, passport) {
             res.status(500)
                 .send({ ErrorMessage: 'Error encountered while attemping to log out' })
         }
-    });
+    })
 
     //------------------------------------------------------/api/choice-------------------------------------------//
-    /*
+
     // GET choice
-    app.get('/api/choice', isLoggedIn, async (req: Request, res: Response) => {
+    app.get('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await choiceCtrl.getChoice(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await choiceCtrl.getChoice(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // POST choice
-    app.post('/api/choice', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            return sendUnauthorizedResponse(res)
-        }
+    app.post('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await choiceCtrl.postChoice(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await choiceCtrl.postChoice(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
-    */
+    })
+
     //------------------------------------------------------/api/doctor-------------------------------------------//
-
     // GET doctor
-    app.get('/api/doctor', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'doctor')) {
-            req.query.doctor_ssn = req.user.username
-        } else { return sendUnauthorizedResponse(res) }
-
+    app.get('/api/doctor', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await doctorCtrl.getDoctor(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await doctorCtrl.getDoctor(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // GET doctor's patients
-    app.get('/api/doctor/patients', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'doctor')) {
-            req.query.doctor_ssn = req.user.username
-        } else { return sendUnauthorizedResponse(res) }
-
+    app.get('/api/doctor/patients', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await doctorCtrl.getDoctorPatients(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await doctorCtrl.getDoctorPatients(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
 
     //------------------------------------------------------/api/message-------------------------------------------//
 
     // GET message
-    app.get('/api/message', isLoggedIn, async (req: Request, res: Response) => {
+    app.get('/api/message', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await messageCtrl.getMessage(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await messageCtrl.getMessage(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // POST message
-    app.post('/api/message', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'doctor')) {
-            // check if the receiver is a valid receiver for the doctor's message
-            req.query.doctor_ssn = req.user.username
-            let doctorPatients = await doctorCtrl.getDoctorPatients(req)
-            // if an error occur while retrieving the patients list, return the error
-            if (doctorPatients instanceof Error || doctorPatients instanceof CustomError) {
-                res.status(500).send({ doctorPatients })
-            } else {
-                // check if the receiver is in the doctor's patients list
-                let valid = false;
-                for (let patient of doctorPatients) {
-                    if (req.body.receiver == patient.patient_ssn) {
-                        valid = true
-                    }
-                }
-                // if the receiver is not in the doctor's patients list, return the error
-                if (!valid) { return sendUnauthorizedResponse(res) }
-            }
-        } else {
-            // check if the receiver is patient's doctor
-            req.query.patient_ssn = req.user.username
-            let patient = await patientCtrl.getPatient(req)
-            // if an error occur while retrieving the patient, return the error
-            if (!(patient instanceof Patient)) {
-                res.status(500).send({ patient })
-            } else {
-                // if the receiver does not correspond to the patient's doctor, return the error
-                if (!(req.body.receiver == patient.doctor_ssn)) { return sendUnauthorizedResponse(res) }
-            }
-        }
+    app.post('/api/message', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         req.body.sender = req.user.username
         try {
-            serverResponse = await messageCtrl.postMessage(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await messageCtrl.postMessage(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // DELETE message
-    app.delete('/api/message', isLoggedIn, async (req: Request, res: Response) => {
-        req.query.receiver = req.user.username
+    app.delete('/api/message', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await messageCtrl.deleteMessage(req);
-            sendDeleteResponse(res, serverResponse);
+            serverResponse = await messageCtrl.deleteMessage(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // GET user's messages
-    app.get('/api/messages/user', isLoggedIn, async (req: Request, res: Response) => {
-        req.query.receiver = req.user.username
+    app.get('/api/messages/user', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await messageCtrl.getUserMessages(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await messageCtrl.getUserMessages(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
 
     //------------------------------------------------------/api/miband-------------------------------------------//
     // GET miband
-    app.get('/api/miband', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'doctor')) {
-            // check if the receiver is a valid receiver for the doctor's message
-            req.query.doctor_ssn = req.user.username
-            let doctorPatients = await doctorCtrl.getDoctorPatients(req)
-            // if an error occur while retrieving the patients list, return the error
-            if (doctorPatients instanceof Error || doctorPatients instanceof CustomError) {
-                res.status(500).send({ doctorPatients })
-            } else {
-                // check if the receiver is in the doctor's patients list
-                let valid = false;
-                for (let patient of doctorPatients) {
-                    if (req.query.patient_ssn == patient.patient_ssn) {
-                        valid = true
-                    }
-                }
-                // if the receiver is not in the doctor's patients list, return the error
-                if (!valid) { return sendUnauthorizedResponse(res) }
-            }
-        } else {
-            req.query.patient_ssn = req.user.username
-        }
+    app.get('/api/miband', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await mibandCtrl.getData(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await mibandCtrl.getData(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // POST miband
-    app.post('/api/miband', isLoggedIn, async (req: Request, res: Response) => {
-        req.query.patient_ssn = req.user.username 
+    app.post('/api/miband', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await mibandCtrl.postData(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await mibandCtrl.postData(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
 
     //------------------------------------------------------/api/patient-------------------------------------------//
     // GET patient
-    app.get('/api/patient', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            req.query.patient_ssn = req.user.username
-        } else {
-            // check if the parameter has been correctly set
-            if (!req.query.patient_ssn) {
-                error.name = "PARAMS ERROR"
-                error.details = ("important parameter is null")
-                res.status(500).send({ ErrorMessage: error })
-            }
-            // check if the the doctor is authorized to get patient's data
-            req.query.doctor_ssn = req.user.username
-            let doctorPatients = await doctorCtrl.getDoctorPatients(req)
-            // if an error occur while retrieving the patients list, return the error
-            if (doctorPatients instanceof Error || doctorPatients instanceof CustomError) {
-                res.status(500).send({ doctorPatients })
-            } else {
-                // check if the patient is in the doctor's patients list
-                let valid = false;
-                for (let patient of doctorPatients) {
-                    if (req.query.patient_ssn == patient.patient_ssn) {
-                        valid = true
-                    }
-                }
-                // if the receiver is not in the doctor's patients list, return the error
-                if (!valid) { return sendUnauthorizedResponse(res) }
-            }
-        }
+    app.get('/api/patient', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await patientCtrl.getPatient(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await patientCtrl.getPatient(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // GET patient's doctor
-    app.get('/api/patient/doctor', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            req.query.patient_ssn = req.user.username
-        } else { return sendUnauthorizedResponse(res) }
-
+    app.get('/api/patient/doctor', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await patientCtrl.getPatientDoctor(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await patientCtrl.getPatientDoctor(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     //------------------------------------------------------/api/patient_survey-------------------------------------------//
     // GET patient's survey
-    app.get('/api/patient_survey', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            req.query.patient_ssn = req.user.username
-        } else {
-            // check if the parameter has been correctly set
-            if (!req.query.patient_ssn) {
-                error.name = "PARAMS ERROR"
-                error.details = ("important parameter is null")
-                res.status(500).send({ ErrorMessage: error })
-            }
-            // check if the the doctor is authorized to get patient's data
-            req.query.doctor_ssn = req.user.username
-            let doctorPatients = await doctorCtrl.getDoctorPatients(req)
-            // if an error occur while retrieving the patients list, return the error
-            if (doctorPatients instanceof Error || doctorPatients instanceof CustomError) {
-                res.status(500).send({ doctorPatients })
-            } else {
-                // check if the patient is in the doctor's patients list
-                let valid = false;
-                for (let patient of doctorPatients) {
-                    if (req.query.patient_ssn == patient.patient_ssn) {
-                        valid = true
-                    }
-                }
-                // if the receiver is not in the doctor's patients list, return the error
-                if (!valid) { return sendUnauthorizedResponse(res) }
-            }
-        }
+    app.get('/api/patient_survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await patientSurveyCtrl.getPatientSurvey(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await patientSurveyCtrl.getPatientSurvey(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // POST patient's survey
-    app.post('/api/patient_survey', isLoggedIn, async (req: Request, res: Response) => {
-        req.query.patient_ssn = req.user.username
+    app.post('/api/patient_survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await patientSurveyCtrl.postPatientSurvey(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await patientSurveyCtrl.postPatientSurvey(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // GET all the patient's surveys
-    app.get('/api/patient_survey/all', isLoggedIn, async (req: Request, res: Response) => {
-        req.query.patient_ssn = req.user.username
+    app.get('/api/patient_survey/all', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await patientSurveyCtrl.getPatientSurveys(req);
-            sendGetResponse(res, serverResponse);
-        }
-        catch (err) {
-            res.status(500);
-            res.send(err);
-        }
-    });
-    //------------------------------------------------------/api/question-------------------------------------------//
-    /*
-    // GET question
-    app.get('/api/question', isLoggedIn, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await questionCtrl.getQuestion(req);
-            sendGetResponse(res, serverResponse);
-        }
-        catch (err) {
-            res.status(500);
-            res.send(err);
-        }
-    });
-    // POST question
-    app.post('/api/question', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            return sendUnauthorizedResponse(res)
-        }
-        try {
-            serverResponse = await questionCtrl.postQuestion(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await patientSurveyCtrl.getPatientSurveys(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
-    */
+    })
+    //------------------------------------------------------/api/question-------------------------------------------//
+
+    // GET question
+    app.get('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
+        try {
+            serverResponse = await questionCtrl.getQuestion(req)
+            sendServerResponse
+        }
+        catch (err) {
+            res.status(500)
+                .send(err)
+        }
+    })
+    // POST question
+    app.post('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
+        try {
+            serverResponse = await questionCtrl.postQuestion(req)
+            sendServerResponse
+        }
+        catch (err) {
+            res.status(500)
+                .send(err)
+        }
+    })
+
     //------------------------------------------------------/api/survey-------------------------------------------//
     // GET survey
-    app.get('/api/survey', isLoggedIn, async (req: Request, res: Response) => {
+    app.get('/api/survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await surveyCtrl.getSurvey(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await surveyCtrl.getSurvey(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // POST Survey
-    app.post('/api/survey', isLoggedIn, async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            return sendUnauthorizedResponse(res)
-        }
+    app.post('/api/survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await surveyCtrl.postSurvey(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await surveyCtrl.postSurvey(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
 
     //------------------------------------------------------/api/user-------------------------------------------//
     // GET user
     app.get('/api/user', async (req: Request, res: Response) => {
-        // check if the user is authorized to call the function, checking his role
-        if (checkRole(req.user, 'patient')) {
-            return sendUnauthorizedResponse(res)
-        }
         try {
-            serverResponse = await userCtrl.getUser(req);
-            sendGetResponse(res, serverResponse);
+            serverResponse = await userCtrl.getUser(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
+    })
     // POST user
     app.post('/api/user', async (req: Request, res: Response) => {
         try {
-            serverResponse = await userCtrl.postUser(req);
-            sendPostResponse(res, serverResponse);
+            serverResponse = await userCtrl.postUser(req)
+            sendServerResponse
         }
         catch (err) {
             res.status(500)
-                .send(err);
+                .send(err)
         }
-    });
-};
+    })
 
-// ==========================================================================================================================================================
-// ==============================================  CHECK-LOGIN FUNCTIONS  ===================================================================================
-// ==========================================================================================================================================================
+    // ==========================================================================================================================================================
+    // ==============================================   OTHER FUNCTIONS   =======================================================================================
+    // ==========================================================================================================================================================
 
-// routes middleware to ensure user is logged in
-function isLoggedIn(req, res, next) {
-    // if not authenticated, return error message
-    if (!(req.isAuthenticated())) {
-        return res.status(401)
-            .send({ ErrorMessage: 'You need to be logged in to call this function' });
+    /*
+    * routes middleware to ensure user is logged in
+    */
+    function isLoggedIn(req, res, next) {
+        // if not authenticated, return error message
+        if (!(req.isAuthenticated())) {
+            return res.status(401)
+                .send({ ErrorMessage: 'You need to be logged in to call this function' })
+        }
+        // check-in passed
+        return next()
     }
-    // check-in passed
-    return next()
-}
 
-// routes middleware to check user is logged in
-function loginRedirect(req, res, next) {
-    // if authenticated, return error message
-    if (req.isAuthenticated()) {
-        return res.status(401)
-            .send({ ServerResponse: 'You are already logged in' });
+    /*
+    * routes middleware to check user is logged in
+    */
+    function loginRedirect(req, res, next) {
+        // if authenticated, return error message
+        if (req.isAuthenticated()) {
+            return res.status(401)
+                .send({ ServerResponse: 'You are already logged in' })
+        }
+        // check-in passed
+        return next()
     }
-    // check-in passed
-    return next();
+
+    /*
+    * check user's authorization to call function by checking role
+    */
+    async function isAuthorized(req, res, next) {
+        // parse url to get the pathname and save it into route
+        let url_parts = url.parse(req.url)
+        let route = url_parts.pathname
+        switch (req.method) {
+            //======================================== 'GET' ======================================== //
+            case 'GET': {
+                switch (req.user.role) {
+                    //============================== 'GET && patient' ==============================//
+                    case 'patient': {
+                        switch (route) {
+                            case '/api/messages/user': {
+                                req.query.receiver = req.user.username
+                                return next()
+                            }
+                            case '/api/miband': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/patient': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/patient/doctor': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/patient_survey': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/patient_survey/all': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            default: {
+                                return sendUnauthorizedResponse(res)
+                            }
+                        }
+                    }
+                    //============================== 'GET && doctor' ==============================//
+                    case 'doctor': {
+                        switch (route) {
+                            case '/api/doctor': {
+                                req.query.doctor_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/doctor/patients': {
+                                req.query.doctor_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/messages/user': {
+                                req.query.receiver = req.user.username
+                                return next()
+                            }
+                            case '/api/miband': {
+                                if (await findInDoctorPatientsList(req.query.patient_ssn, req, res)) { return next() }
+                                return
+                            }
+                            case '/api/patient': {
+                                if (await findInDoctorPatientsList(req.query.patient_ssn, req, res)) { return next() }
+                                return
+                            }
+                            case '/api/patient_survey': {
+                                if (await findInDoctorPatientsList(req.query.patient_ssn, req, res)) { return next() }
+                                return
+                            }
+                            case '/api/patient_survey/all': {
+                                if (await findInDoctorPatientsList(req.query.patient_ssn, req, res)) { return next() }
+                                return
+                            }
+                            case '/api/survey': {
+                                //statements;
+                                return next()
+                            }
+                            default: {
+                                return sendUnauthorizedResponse(res)
+                            }
+                        }
+                    }
+                    //============================== 'GET && default' ==============================//
+                    default: {
+                        return sendUnauthorizedResponse(res)
+                    }
+                }
+            }
+            //======================================== 'POST' ======================================== //
+            case 'POST': {
+                switch (req.user.role) {
+                    //============================== 'POST && patient' ==============================//
+                    case 'patient': {
+                        switch (route) {
+                            case '/api/message': {
+                                if (await checkPatientDoctor(req.query.receiver, req, res)) { return next() }
+                                return
+                            }
+                            case '/api/miband': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            case '/api/patient_survey': {
+                                req.query.patient_ssn = req.user.username
+                                return next()
+                            }
+                            default: {
+                                return sendUnauthorizedResponse(res)
+                            }
+                        }
+                        break
+                    }
+                    //============================== 'POST && doctor' ==============================//
+                    case 'doctor': {
+                        switch (route) {
+                            case '/api/message': {
+                                if (await findInDoctorPatientsList(req.query.receiver, req, res)) { return next() }
+                                return
+                            }
+                            default: {
+                                return sendUnauthorizedResponse(res)
+                            }
+                        }
+                    }
+                    //============================== 'POST && default' ==============================//
+                    default: {
+                        return sendUnauthorizedResponse(res)
+                    }
+                }
+            }
+            //======================================== 'DELETE' ======================================== //
+            case 'DELETE': {
+                switch (req.user.role) {
+                    //============================== 'DELETE && patient' ==============================//
+                    case 'patient': {
+                        switch (route) {
+                            case '/api/message': {
+                                req.query.receiver = req.user.username
+                                return next()
+                            }
+                            default: {
+                                return sendUnauthorizedResponse(res)
+                            }
+                        }
+                    }
+                    //============================== 'DELETE && doctor' ==============================//
+                    case 'doctor': {
+                        switch (route) {
+                            case '/api/message': {
+                                req.query.receiver = req.user.username
+                                return next()
+                            }
+                            default: {
+                                return sendUnauthorizedResponse(res)
+                            }
+                        }
+                    }
+                    default: {
+                        return sendUnauthorizedResponse(res)
+                    }
+                }
+            }
+            //============================== 'default' ==============================//
+            default: {
+                return sendUnauthorizedResponse(res)
+            }
+        }
+    }
+
+    /*
+    * check if a given patient is present in the session doctor's patients list
+    */
+    async function findInDoctorPatientsList(patient: string, req, res) {
+        // check if the receiver is a valid receiver for the doctor's message
+        req.query.doctor_ssn = req.user.username
+        let doctorPatients = await doctorCtrl.getDoctorPatients(req)
+        // if an error occur while retrieving the patients list, return the error
+        if (doctorPatients instanceof Error || doctorPatients instanceof CustomError) {
+            res.status(500).send({ doctorPatients })
+            return false
+        } else {
+            // check if the receiver is in the doctor's patients list
+            let valid = false;
+            for (let element of doctorPatients) {
+                if (patient == element.patient_ssn) {
+                    valid = true
+                }
+            }
+            // if the receiver is not in the doctor's patients list, return the error
+            if (!valid) {
+                sendUnauthorizedResponse(res)
+                return false
+            }
+        }
+        return true
+    }
+
+    /*
+    * check if a given doctor is the session user's doctor
+    */
+    async function checkPatientDoctor(doctor: string, req, res) {
+        // check if the receiver is patient's doctor
+        req.query.patient_ssn = req.user.username
+        let patient = await patientCtrl.getPatient(req)
+        // if an error occur while retrieving the patient, return the error
+        if (!(patient instanceof Patient)) {
+            res.status(500).send({ patient })
+            return false
+        } else {
+            // if the receiver does not correspond to the patient's doctor, return the error
+            if (!(doctor == patient.doctor_ssn)) {
+                sendUnauthorizedResponse(res)
+                return false
+            }
+        }
+        return true
+    }
 }
-
-// check if user is authorized to do something by checking the role
-function checkRole(user: SerializedUser, validRole: string) {
-    return (user.role == validRole)
-}
-
-function isAuthorizedToGet(req, res, next) {
-    if (req.user.role == 'patient'){}
-    var url_parts = url.parse(req.url);
-    console.log(url_parts.pathname);
-}
-
-function isAuthorizedToPost(req, res, next) {
-
-}
-
-/*
-* get
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*/
