@@ -2,12 +2,23 @@ import * as controllers from './controllers/controllers'
 import { Request, Response } from 'express'
 import { CustomError } from './models/customError'
 import { Patient, SerializedUser } from './models/models'
+import * as url from 'url';
 
 module.exports = function (app, passport) {
 
     // variable used for the responses
-    var serverResponse: any;
-    var error: CustomError = new CustomError();
+    var serverResponse: any
+    var error: CustomError = new CustomError()
+    var choiceCtrl = new controllers.ChoiceCtrl()
+    var doctorCtrl = new controllers.DoctorCtrl()
+    var messageCtrl = new controllers.MessageCtrl()
+    var mibandCtrl = new controllers.MibandCtrl()
+    var patientCtrl = new controllers.PatientCtrl()
+    var patientSurveyCtrl = new controllers.PatientSurveyCtrl()
+    var questionCtrl = new controllers.QuestionCtrl()
+    var surveyCtrl = new controllers.SurveyCtrl()
+    var userCtrl = new controllers.UserCtrl()
+
 
     //------------------------UNAUTHORIZED RESPONSE MESSAGES--------------------------//
     function sendUnauthorizedResponse(res: Response) {
@@ -163,9 +174,9 @@ module.exports = function (app, passport) {
     });
 
     //------------------------------------------------------/api/choice-------------------------------------------//
+    /*
     // GET choice
     app.get('/api/choice', isLoggedIn, async (req: Request, res: Response) => {
-        let choiceCtrl = new controllers.ChoiceCtrl();
         try {
             serverResponse = await choiceCtrl.getChoice(req);
             sendGetResponse(res, serverResponse);
@@ -181,7 +192,6 @@ module.exports = function (app, passport) {
         if (checkRole(req.user, 'patient')) {
             return sendUnauthorizedResponse(res)
         }
-        let choiceCtrl = new controllers.ChoiceCtrl();
         try {
             serverResponse = await choiceCtrl.postChoice(req);
             sendPostResponse(res, serverResponse);
@@ -191,7 +201,7 @@ module.exports = function (app, passport) {
                 .send(err);
         }
     });
-
+    */
     //------------------------------------------------------/api/doctor-------------------------------------------//
 
     // GET doctor
@@ -201,7 +211,6 @@ module.exports = function (app, passport) {
             req.query.doctor_ssn = req.user.username
         } else { return sendUnauthorizedResponse(res) }
 
-        let doctorCtrl = new controllers.DoctorCtrl();
         try {
             serverResponse = await doctorCtrl.getDoctor(req);
             sendGetResponse(res, serverResponse);
@@ -218,7 +227,6 @@ module.exports = function (app, passport) {
             req.query.doctor_ssn = req.user.username
         } else { return sendUnauthorizedResponse(res) }
 
-        let doctorCtrl = new controllers.DoctorCtrl();
         try {
             serverResponse = await doctorCtrl.getDoctorPatients(req);
             sendGetResponse(res, serverResponse);
@@ -233,7 +241,6 @@ module.exports = function (app, passport) {
 
     // GET message
     app.get('/api/message', isLoggedIn, async (req: Request, res: Response) => {
-        let messageCtrl = new controllers.MessageCtrl();
         try {
             serverResponse = await messageCtrl.getMessage(req);
             sendGetResponse(res, serverResponse);
@@ -248,7 +255,6 @@ module.exports = function (app, passport) {
         // check if the user is authorized to call the function, checking his role
         if (checkRole(req.user, 'doctor')) {
             // check if the receiver is a valid receiver for the doctor's message
-            let doctorCtrl = new controllers.DoctorCtrl()
             req.query.doctor_ssn = req.user.username
             let doctorPatients = await doctorCtrl.getDoctorPatients(req)
             // if an error occur while retrieving the patients list, return the error
@@ -267,7 +273,6 @@ module.exports = function (app, passport) {
             }
         } else {
             // check if the receiver is patient's doctor
-            let patientCtrl = new controllers.PatientCtrl()
             req.query.patient_ssn = req.user.username
             let patient = await patientCtrl.getPatient(req)
             // if an error occur while retrieving the patient, return the error
@@ -279,7 +284,6 @@ module.exports = function (app, passport) {
             }
         }
         req.body.sender = req.user.username
-        let messageCtrl = new controllers.MessageCtrl();
         try {
             serverResponse = await messageCtrl.postMessage(req);
             sendPostResponse(res, serverResponse);
@@ -292,7 +296,6 @@ module.exports = function (app, passport) {
     // DELETE message
     app.delete('/api/message', isLoggedIn, async (req: Request, res: Response) => {
         req.query.receiver = req.user.username
-        let messageCtrl = new controllers.MessageCtrl();
         try {
             serverResponse = await messageCtrl.deleteMessage(req);
             sendDeleteResponse(res, serverResponse);
@@ -305,7 +308,6 @@ module.exports = function (app, passport) {
     // GET user's messages
     app.get('/api/messages/user', isLoggedIn, async (req: Request, res: Response) => {
         req.query.receiver = req.user.username
-        let messageCtrl = new controllers.MessageCtrl();
         try {
             serverResponse = await messageCtrl.getUserMessages(req);
             sendGetResponse(res, serverResponse);
@@ -322,7 +324,6 @@ module.exports = function (app, passport) {
         // check if the user is authorized to call the function, checking his role
         if (checkRole(req.user, 'doctor')) {
             // check if the receiver is a valid receiver for the doctor's message
-            let doctorCtrl = new controllers.DoctorCtrl()
             req.query.doctor_ssn = req.user.username
             let doctorPatients = await doctorCtrl.getDoctorPatients(req)
             // if an error occur while retrieving the patients list, return the error
@@ -342,7 +343,6 @@ module.exports = function (app, passport) {
         } else {
             req.query.patient_ssn = req.user.username
         }
-        let mibandCtrl = new controllers.MibandCtrl();
         try {
             serverResponse = await mibandCtrl.getData(req);
             sendGetResponse(res, serverResponse);
@@ -355,7 +355,6 @@ module.exports = function (app, passport) {
     // POST miband
     app.post('/api/miband', isLoggedIn, async (req: Request, res: Response) => {
         req.query.patient_ssn = req.user.username 
-        let mibandCtrl = new controllers.MibandCtrl();
         try {
             serverResponse = await mibandCtrl.postData(req);
             sendPostResponse(res, serverResponse);
@@ -380,7 +379,6 @@ module.exports = function (app, passport) {
                 res.status(500).send({ ErrorMessage: error })
             }
             // check if the the doctor is authorized to get patient's data
-            let doctorCtrl = new controllers.DoctorCtrl()
             req.query.doctor_ssn = req.user.username
             let doctorPatients = await doctorCtrl.getDoctorPatients(req)
             // if an error occur while retrieving the patients list, return the error
@@ -398,7 +396,6 @@ module.exports = function (app, passport) {
                 if (!valid) { return sendUnauthorizedResponse(res) }
             }
         }
-        let patientCtrl = new controllers.PatientCtrl();
         try {
             serverResponse = await patientCtrl.getPatient(req);
             sendGetResponse(res, serverResponse);
@@ -415,7 +412,6 @@ module.exports = function (app, passport) {
             req.query.patient_ssn = req.user.username
         } else { return sendUnauthorizedResponse(res) }
 
-        let patientCtrl = new controllers.PatientCtrl();
         try {
             serverResponse = await patientCtrl.getPatientDoctor(req);
             sendGetResponse(res, serverResponse);
@@ -439,7 +435,6 @@ module.exports = function (app, passport) {
                 res.status(500).send({ ErrorMessage: error })
             }
             // check if the the doctor is authorized to get patient's data
-            let doctorCtrl = new controllers.DoctorCtrl()
             req.query.doctor_ssn = req.user.username
             let doctorPatients = await doctorCtrl.getDoctorPatients(req)
             // if an error occur while retrieving the patients list, return the error
@@ -457,7 +452,6 @@ module.exports = function (app, passport) {
                 if (!valid) { return sendUnauthorizedResponse(res) }
             }
         }
-        let patientSurveyCtrl = new controllers.PatientSurveyCtrl();
         try {
             serverResponse = await patientSurveyCtrl.getPatientSurvey(req);
             sendGetResponse(res, serverResponse);
@@ -470,7 +464,6 @@ module.exports = function (app, passport) {
     // POST patient's survey
     app.post('/api/patient_survey', isLoggedIn, async (req: Request, res: Response) => {
         req.query.patient_ssn = req.user.username
-        let patientSurveyCtrl = new controllers.PatientSurveyCtrl();
         try {
             serverResponse = await patientSurveyCtrl.postPatientSurvey(req);
             sendPostResponse(res, serverResponse);
@@ -483,7 +476,6 @@ module.exports = function (app, passport) {
     // GET all the patient's surveys
     app.get('/api/patient_survey/all', isLoggedIn, async (req: Request, res: Response) => {
         req.query.patient_ssn = req.user.username
-        let patientSurveyCtrl = new controllers.PatientSurveyCtrl();
         try {
             serverResponse = await patientSurveyCtrl.getPatientSurveys(req);
             sendGetResponse(res, serverResponse);
@@ -494,9 +486,9 @@ module.exports = function (app, passport) {
         }
     });
     //------------------------------------------------------/api/question-------------------------------------------//
+    /*
     // GET question
     app.get('/api/question', isLoggedIn, async (req: Request, res: Response) => {
-        let questionCtrl = new controllers.QuestionCtrl();
         try {
             serverResponse = await questionCtrl.getQuestion(req);
             sendGetResponse(res, serverResponse);
@@ -512,7 +504,6 @@ module.exports = function (app, passport) {
         if (checkRole(req.user, 'patient')) {
             return sendUnauthorizedResponse(res)
         }
-        let questionCtrl = new controllers.QuestionCtrl();
         try {
             serverResponse = await questionCtrl.postQuestion(req);
             sendPostResponse(res, serverResponse);
@@ -522,10 +513,10 @@ module.exports = function (app, passport) {
                 .send(err);
         }
     });
+    */
     //------------------------------------------------------/api/survey-------------------------------------------//
     // GET survey
     app.get('/api/survey', isLoggedIn, async (req: Request, res: Response) => {
-        let surveyCtrl = new controllers.SurveyCtrl();
         try {
             serverResponse = await surveyCtrl.getSurvey(req);
             sendGetResponse(res, serverResponse);
@@ -541,7 +532,6 @@ module.exports = function (app, passport) {
         if (checkRole(req.user, 'patient')) {
             return sendUnauthorizedResponse(res)
         }
-        let surveyCtrl = new controllers.SurveyCtrl();
         try {
             serverResponse = await surveyCtrl.postSurvey(req);
             sendPostResponse(res, serverResponse);
@@ -559,7 +549,6 @@ module.exports = function (app, passport) {
         if (checkRole(req.user, 'patient')) {
             return sendUnauthorizedResponse(res)
         }
-        let userCtrl = new controllers.UserCtrl();
         try {
             serverResponse = await userCtrl.getUser(req);
             sendGetResponse(res, serverResponse);
@@ -571,7 +560,6 @@ module.exports = function (app, passport) {
     });
     // POST user
     app.post('/api/user', async (req: Request, res: Response) => {
-        let userCtrl = new controllers.UserCtrl();
         try {
             serverResponse = await userCtrl.postUser(req);
             sendPostResponse(res, serverResponse);
@@ -613,3 +601,28 @@ function loginRedirect(req, res, next) {
 function checkRole(user: SerializedUser, validRole: string) {
     return (user.role == validRole)
 }
+
+function isAuthorizedToGet(req, res, next) {
+    if (req.user.role == 'patient'){}
+    var url_parts = url.parse(req.url);
+    console.log(url_parts.pathname);
+}
+
+function isAuthorizedToPost(req, res, next) {
+
+}
+
+/*
+* get
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
