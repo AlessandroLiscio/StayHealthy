@@ -20,7 +20,7 @@
     -->
     <div #chart style="width: 90%; height: 500px; margin: 0 auto;"></div>
 </div>
-<div class="container survey text-center">
+<div *ngIf="datasets" class="container survey text-center">
     <p *ngIf="surveyStatus">{{surveyStatus}}</p>
     <table *ngIf="!surveyStatus && answers" class="table">
         <thead>
