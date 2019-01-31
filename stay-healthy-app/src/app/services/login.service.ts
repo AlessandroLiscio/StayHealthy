@@ -40,6 +40,7 @@ export class LoginService {
   login(username: string, password: string): void {
     this.requestLogin(username, password)
       .subscribe((res: any) => {
+        console.log(res)
         if (res.ServerResponse == "patient") {
           this.initalizePatientUser();
         }
@@ -51,6 +52,7 @@ export class LoginService {
           if (error.status == 401) {
             this.authorizationService.isAuthorized$.next(false);
           }
+          console.log(error)
           console.log(error.status + ": " + error.error.ServerResponse);
         })
   }

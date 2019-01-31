@@ -11,7 +11,7 @@ var fs = require('fs');
 
 var https = require('https')
 var compression = require('compression');
-var redirectToHTTPS = require('express-http-to-https').redirectToHTTPS;
+//var redirectToHTTPS = require('express-http-to-https').redirectToHTTPS;
 
 var certOptions = {
     key: fs.readFileSync(path.resolve('server.key')),
@@ -55,6 +55,6 @@ require('./routes.ts')(app, passport); // load our routes and pass in our app an
 
 // launch ======================================================================
  // https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 443'));
- app.listen(80, ()=> console.log("Listening on port 80"));
+ app.listen(3000, ()=> console.log("Listening on port 80"));
 //app.listen(process.env.PORT);
 //console.log('Server listening on port: ' + process.env.PORT);

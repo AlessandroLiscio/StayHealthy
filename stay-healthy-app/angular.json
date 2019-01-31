@@ -39,7 +39,8 @@
               "node_modules/crypto-js/index.js",
               "node_modules/aes-js/index.js",
               "node_modules/moment/min/moment.min.js",
-              "node_modules/chart.js/src/chart.js"
+              "node_modules/chart.js/src/chart.js",
+              "node_modules/plotly.js/dist/plotly.min.js"
             ]
           },
           "configurations": {
