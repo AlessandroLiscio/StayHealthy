@@ -1,25 +1,25 @@
-import { Request } from "express";
-import * as bcrypt from "bcrypt";
+import { Request } from "express"
+import * as bcrypt from "bcrypt"
 
-import { User, Doctor, Patient, CustomError } from "../models/models";
+import { User, Doctor, Patient, CustomError } from "../models/models"
 import { TableCtrl } from './tableCtrl'
-import { PatientCtrl } from "./patientCtrl";
-import { DoctorCtrl } from "./doctorCtrl";
+import { PatientCtrl } from "./patientCtrl"
+import { DoctorCtrl } from "./doctorCtrl"
 
 export class UserCtrl extends TableCtrl {
 
     public async getUser(req: Request): Promise<any> {
 
-        this.sql = 'SELECT * FROM users WHERE username = $1';
+        this.sql = 'SELECT * FROM users WHERE username = $1'
         this.params = [
             req.body.username
-        ];
-        this.result = await this.dbManager.getQuery(this.sql, this.params);
+        ]
+        this.result = await this.dbManager.getQuery(this.sql, this.params)
         if (this.result.rowCount > 0) {
-            let user = new User();
-            user.username = this.result.rows[0].username;
-            user.password = this.result.rows[0].password;
-            user.role = this.result.rows[0].role;
+            let user = new User()
+            user.username = this.result.rows[0].username
+            user.password = this.result.rows[0].password
+            user.role = this.result.rows[0].role
             this.result = user
         }
         return this.result
@@ -36,25 +36,25 @@ export class UserCtrl extends TableCtrl {
             return this.error
         }
         // add user to the users table
-        this.sql = "INSERT INTO users ( username, password, role ) VALUES ($1,$2,$3)";
+        this.sql = "INSERT INTO users ( username, password, role ) VALUES ($1,$2,$3)"
         this.params = [
             req.body.username,
             bcrypt.hashSync(req.body.password, 8),
             req.body.role
-        ];
-        this.result = await this.dbManager.postQuery(this.sql, this.params);
+        ]
+        this.result = await this.dbManager.postQuery(this.sql, this.params)
 
         // add the new patient or doctor to the right table
         if (!(this.result instanceof Error) && !(this.result instanceof CustomError)) {
             if (req.body.role == 'patient') {
-                let patientCtrl = new PatientCtrl;
+                let patientCtrl = new PatientCtrl
                 this.result = await patientCtrl.postPatient(req)
             } else if (req.body.role == 'doctor') {
-                let doctorCtrl = new DoctorCtrl();
+                let doctorCtrl = new DoctorCtrl()
                 this.result = await doctorCtrl.postDoctor(req)
             }
         }
-        return this.result;
+        return this.result
     }
 
     private async checkPatientUser(req: Request): Promise<boolean> {
@@ -64,7 +64,7 @@ export class UserCtrl extends TableCtrl {
         if (!(this.checkSsnUsername(req.body.patient_ssn, req.body.username))) return false
 
         // - check if the patient is already on the db
-        let patientCtrl = new PatientCtrl();
+        let patientCtrl = new PatientCtrl()
         req.query.patient_ssn = req.body.patient_ssn
         if ((await patientCtrl.getPatient(req)) instanceof Patient) {
             this.error.name = "DB ERROR"
@@ -72,7 +72,7 @@ export class UserCtrl extends TableCtrl {
             return false
         }
         // - check if his doctor exists in the db
-        let doctorCtrl = new DoctorCtrl();
+        let doctorCtrl = new DoctorCtrl()
         req.query.doctor_ssn = req.body.doctor_ssn
         if (!((await doctorCtrl.getDoctor(req)) instanceof Doctor)) {
             this.error.name = "DB ERROR"
@@ -88,7 +88,7 @@ export class UserCtrl extends TableCtrl {
         // username and doctor's ssn must be the same
         if (!(this.checkSsnUsername(req.body.doctor_ssn, req.body.username))) return false
         // - check if the doctor is already on the db
-        let doctorCtrl = new DoctorCtrl();
+        let doctorCtrl = new DoctorCtrl()
         if ((await doctorCtrl.getDoctor(req)) instanceof Doctor) {
             this.error.name = "DB ERROR"
             this.error.details = "doctor already present in the database"
@@ -97,9 +97,4 @@ export class UserCtrl extends TableCtrl {
         return true
     }
 
-    // password comparison method
-    public comparePassword(candidatePassword, dbPassword) {
-        return bcrypt.compareSync(candidatePassword, dbPassword)
-    };
-   
 }
