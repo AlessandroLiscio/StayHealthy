@@ -14,7 +14,7 @@ import { MibandComponent } from './components/miband/miband.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-import { ChartsModule } from '../ng2-charts/ng2-charts';
+//import { ChartsModule } from '../ng2-charts/ng2-charts';
 import { NgbDatepickerModule , NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { Ng5SliderModule } from 'ng5-slider';
  
@@ -65,8 +65,8 @@ const appRoutes: Routes = [
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     WebBluetoothModule.forRoot({
       enableTracing: false // or false, this will enable logs in the browser's console
-    }),
-    ChartsModule
+    })
+    //ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

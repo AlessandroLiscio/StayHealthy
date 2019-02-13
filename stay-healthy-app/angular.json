@@ -40,7 +40,7 @@
               "node_modules/aes-js/index.js",
               "node_modules/moment/min/moment.min.js",
               "node_modules/chart.js/src/chart.js",
-              "node_modules/plotly.js/dist/plotly.min.js"
+              "node_modules/plotly.js/dist/plotly-basic.min.js"
             ]
           },
           "configurations": {
@@ -63,8 +63,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "3mb",
+                  "maximumError": "7mb"
                 }
               ],
               "serviceWorker": true

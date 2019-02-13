@@ -7,6 +7,7 @@ import { Patient } from 'src/app/models/patient/patient';
 import { Doctor } from 'src/app/models/doctor/doctor';
 import * as moment from 'moment';
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { ResponsePatient } from 'src/app/models/patient/responsePatient';
 
 
 const animationString = '<span><i class="fa fa-spinner fa-pulse"></i></span>';
@@ -148,7 +149,8 @@ export class MibandComponent implements OnInit {
                 this.authorizationService.isAuthorized$.next(false);
               }
               this.fetchStatus = "C'è stato un errore nell'invio dei dati.";
-              console.log(error)
+              console.log(error);
+              this.getPatientLastFetchDate();
             })
           fetchSubscription.unsubscribe();
         }
@@ -160,6 +162,16 @@ export class MibandComponent implements OnInit {
     this.miBandService.getBattery()
       .then((result: number) => {
         this.batteryLevel = result;
+      })
+  }
+
+  getPatientLastFetchDate(){
+    this.patientService.getPatient()
+      .subscribe((patient: ResponsePatient) => {
+        this.patient.last_fetch_date = patient.last_fetch_date;
+      },
+      error => {
+        console.log(error);
       })
   }
 }
