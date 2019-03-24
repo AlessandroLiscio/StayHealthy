@@ -11,23 +11,20 @@ module.exports = function (app, passport) {
     var serverResponse: any
 
     // initialize all the tables controllers
-    var choiceCtrl = new controllers.ChoiceCtrl()
     var doctorCtrl = new controllers.DoctorCtrl()
     var messageCtrl = new controllers.MessageCtrl()
     var mibandCtrl = new controllers.MibandCtrl()
     var patientCtrl = new controllers.PatientCtrl()
     var patientSurveyCtrl = new controllers.PatientSurveyCtrl()
-    var questionCtrl = new controllers.QuestionCtrl()
     var surveyCtrl = new controllers.SurveyCtrl()
     var userCtrl = new controllers.UserCtrl()
 
-
-    //------------------------UNAUTHORIZED RESPONSE MESSAGES--------------------------//
+    //------------------------ UNAUTHORIZED RESPONSE MESSAGES --------------------------//
     function sendUnauthorizedResponse(res: Response) {
         res.status(401).send({ ErrorMessage: 'You are not authorized to call this function' })
     }
 
-    //------------------------LOGIN RESPONSE MESSAGES--------------------------//
+    //------------------------ LOGIN RESPONSE MESSAGES --------------------------------//
     function handleLoginResponse(res: Response, serverResponse: any) {
         if (serverResponse instanceof Error) {
             return res.status(500).send({ ErrorMessage: serverResponse})
@@ -38,6 +35,7 @@ module.exports = function (app, passport) {
         res.status(200).send({ ServerResponse: serverResponse })
     }
 
+    //------------------------ SERVER RESPONSE HANDLER ------------------------//
     function sendServerResponse(req: Request, res: Response, serverResponse: any) {
         switch (req.method) {
             //------------------------GET RESPONSE MESSAGES--------------------------//
@@ -116,7 +114,7 @@ module.exports = function (app, passport) {
         }
     }
 
-    //--------------------------------------------------------APPLICATION------------------------------------------
+    //-----------------------------------------------------APPLICATION-------------------------------------------//
     app.get(/^((?!\/api).)*$/, (req: Request, res: Response, next) => {
         res.sendFile(path.join(__dirname, '../public/index.html'))
     })
@@ -169,31 +167,6 @@ module.exports = function (app, passport) {
         } else {
             res.status(500)
                 .send({ ErrorMessage: 'Error encountered while attemping to log out' })
-        }
-    })
-
-    //------------------------------------------------------/api/choice-------------------------------------------//
-
-    // GET choice
-    app.get('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await choiceCtrl.getChoice(req)
-            sendServerResponse(req,res,serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
-    // POST choice
-    app.post('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await choiceCtrl.postChoice(req)
-            sendServerResponse(req,res,serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
         }
     })
 
@@ -344,30 +317,6 @@ module.exports = function (app, passport) {
     app.get('/api/patient_survey/all', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await patientSurveyCtrl.getPatientSurveys(req)
-            sendServerResponse(req,res,serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
-    //------------------------------------------------------/api/question-------------------------------------------//
-
-    // GET question
-    app.get('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await questionCtrl.getQuestion(req)
-            sendServerResponse(req,res,serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
-    // POST question
-    app.post('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await questionCtrl.postQuestion(req)
             sendServerResponse(req,res,serverResponse)
         }
         catch (err) {

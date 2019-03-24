@@ -3,6 +3,7 @@ import { CustomError } from './models/customError'
 
 export default class DbManager {
 
+    // Custom Error variable to translate db unsuccesfull query results into errors
     private error: CustomError = new CustomError()
 
     // check if the parameters array is correct
@@ -17,7 +18,9 @@ export default class DbManager {
         return true
     }
 
-    // function to connect to the database for a GET query
+    /*
+    * connect to the database for a GET query
+    */
     public async getQuery(sql: string, params: any[]): Promise<any> {
 
         // check that parameters are not null
@@ -52,7 +55,9 @@ export default class DbManager {
         }
     }
 
-    // function to connect to the database for a POST query
+    /*
+    * connect to the database for a POST query
+    */
     public async postQuery(sql: string, params: any[]): Promise<any> {
 
         // check that parameters are not null
@@ -77,7 +82,9 @@ export default class DbManager {
         }
     }
 
-    // function to connect to the database for a DELETE query
+    /*
+    * connect to the database for a DELETE query
+    */
     public async deleteQuery(sql: string, params: any[]): Promise<any> {
 
         // check that parameters are not null
@@ -112,7 +119,9 @@ export default class DbManager {
         }
     }
 
-    // function to connect to the database for posting the miband data
+    /*
+    * connect to the database for a posting miband data
+    */
     public async postData(sql: string, data: any[]): Promise<any> {
 
         // create new clients pool
