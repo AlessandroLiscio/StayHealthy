@@ -164,7 +164,7 @@ export class MiBand {
         this.getCharacteristic(UUIDS.UUID_MIBAND_2_SERVICE, UUIDS.UUID_AUTHORIZATION_CHARACTERISTIC)
         .then(characteristc => {
             return characteristc.writeValue(this.AB(CmdHeaders.SendKey, this.key))
-        })
+        }) 
         .catch(error => {
             console.log(error)
         })

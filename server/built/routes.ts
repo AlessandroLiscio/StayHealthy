@@ -170,12 +170,40 @@ module.exports = function (app, passport) {
         }
     })
 
+<<<<<<< HEAD
+=======
+    //------------------------------------------------------/api/choice-------------------------------------------//
+
+    // GET choice
+    app.get('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
+        try {
+            serverResponse = await choiceCtrl.getChoice(req)
+            sendServerResponse(req, res, serverResponse)
+        }
+        catch (err) {
+            res.status(500)
+                .send(err)
+        }
+    })
+    // POST choice
+    app.post('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
+        try {
+            serverResponse = await choiceCtrl.postChoice(req)
+            sendServerResponse(req,res,serverResponse)
+        }
+        catch (err) {
+            res.status(500)
+                .send(err)
+        }
+    })
+
+>>>>>>> 9cde78756d28ff1a29aa5964909dadd3d43fc5e3
     //------------------------------------------------------/api/doctor-------------------------------------------//
     // GET doctor
     app.get('/api/doctor', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await doctorCtrl.getDoctor(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -186,7 +214,7 @@ module.exports = function (app, passport) {
     app.get('/api/doctor/patients', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await doctorCtrl.getDoctorPatients(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -200,7 +228,7 @@ module.exports = function (app, passport) {
     app.get('/api/message', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await messageCtrl.getMessage(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -212,7 +240,7 @@ module.exports = function (app, passport) {
         req.body.sender = req.user.username
         try {
             serverResponse = await messageCtrl.postMessage(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -223,7 +251,7 @@ module.exports = function (app, passport) {
     app.delete('/api/message', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await messageCtrl.deleteMessage(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -234,7 +262,7 @@ module.exports = function (app, passport) {
     app.get('/api/messages/user', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await messageCtrl.getUserMessages(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -247,7 +275,7 @@ module.exports = function (app, passport) {
     app.get('/api/miband', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await mibandCtrl.getData(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -258,7 +286,7 @@ module.exports = function (app, passport) {
     app.post('/api/miband', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await mibandCtrl.postData(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -271,7 +299,7 @@ module.exports = function (app, passport) {
     app.get('/api/patient', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await patientCtrl.getPatient(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -282,7 +310,7 @@ module.exports = function (app, passport) {
     app.get('/api/patient/doctor', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await patientCtrl.getPatientDoctor(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -293,8 +321,8 @@ module.exports = function (app, passport) {
     // GET patient's survey
     app.get('/api/patient_survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
-            serverResponse = await patientSurveyCtrl.getPatientSurvey(req);
-            sendServerResponse(req,res,serverResponse)
+            serverResponse = await patientSurveyCtrl.getPatientSurvey(req)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -305,8 +333,7 @@ module.exports = function (app, passport) {
     app.post('/api/patient_survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await patientSurveyCtrl.postPatientSurvey(req)
-            sendServerResponse(req,res,serverResponse)
-
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -317,20 +344,47 @@ module.exports = function (app, passport) {
     app.get('/api/patient_survey/all', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await patientSurveyCtrl.getPatientSurveys(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
                 .send(err)
         }
     })
+<<<<<<< HEAD
+=======
+    //------------------------------------------------------/api/question-------------------------------------------//
+
+    // GET question
+    app.get('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
+        try {
+            serverResponse = await questionCtrl.getQuestion(req)
+            sendServerResponse(req, res, serverResponse)
+        }
+        catch (err) {
+            res.status(500)
+                .send(err)
+        }
+    })
+    // POST question
+    app.post('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
+        try {
+            serverResponse = await questionCtrl.postQuestion(req)
+            sendServerResponse(req, res, serverResponse)
+        }
+        catch (err) {
+            res.status(500)
+                .send(err)
+        }
+    })
+>>>>>>> 9cde78756d28ff1a29aa5964909dadd3d43fc5e3
 
     //------------------------------------------------------/api/survey-------------------------------------------//
     // GET survey
     app.get('/api/survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await surveyCtrl.getSurvey(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -341,7 +395,7 @@ module.exports = function (app, passport) {
     app.post('/api/survey', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
         try {
             serverResponse = await surveyCtrl.postSurvey(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -354,7 +408,7 @@ module.exports = function (app, passport) {
     app.get('/api/user', async (req: Request, res: Response) => {
         try {
             serverResponse = await userCtrl.getUser(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)
@@ -365,7 +419,7 @@ module.exports = function (app, passport) {
     app.post('/api/user', async (req: Request, res: Response) => {
         try {
             serverResponse = await userCtrl.postUser(req)
-            sendServerResponse(req,res,serverResponse)
+            sendServerResponse(req, res, serverResponse)
         }
         catch (err) {
             res.status(500)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // imports ====================================================================
 var express  = require('express')
 var app      = express()
@@ -10,6 +11,22 @@ var redirectToHTTPS = require('express-http-to-https').redirectToHTTPS
 var cookieParser = require('cookie-parser')
 var bodyParser   = require('body-parser')
 var session      = require('express-session')
+=======
+// server.js
+
+// set up ======================================================================
+// get all the tools we need
+var express  = require('express');
+var app      = express();
+var passport = require('passport');
+// var flash    = require('connect-flash');
+var path = require('path');
+var fs = require('fs');
+
+var https = require('https')
+var compression = require('compression');
+//var redirectToHTTPS = require('express-http-to-https').redirectToHTTPS;
+>>>>>>> 9cde78756d28ff1a29aa5964909dadd3d43fc5e3
 
 var certOptions = {
     key: fs.readFileSync(path.resolve('server.key')),
@@ -42,7 +59,14 @@ app.use(passport.session()) // persistent login sessions
 require('./routes.ts')(app, passport) // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
+<<<<<<< HEAD
  // https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 443'))
  app.listen(80, ()=> console.log("Listening on port 80"))
 //app.listen(process.env.PORT)
 //console.log('Server listening on port: ' + process.env.PORT)
+=======
+ // https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 443'));
+ app.listen(3000, ()=> console.log("Listening on port 80"));
+//app.listen(process.env.PORT);
+//console.log('Server listening on port: ' + process.env.PORT);
+>>>>>>> 9cde78756d28ff1a29aa5964909dadd3d43fc5e3

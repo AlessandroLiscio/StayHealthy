@@ -9,6 +9,7 @@
             <p>Seleziona il periodo da visualizzare</p>
             <input class="form-control text-center" placeholder="yyyy-mm-dd" name="d" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" (ngModelChange)=" searchHistory($event)">
         </div>
+   <!--
     <div *ngIf="datasets">
         <canvas baseChart [labels]="labels" [chartType]="chart_type" [options]="graphOptions" [datasets]="datasets" [legend]="true"
             style="height: 400px;">
@@ -16,8 +17,10 @@
     </div>
 
     <ng5-slider *ngIf="datasets" [(value)]="minutes_offset" [options]="sliderOptions" (userChange)="onUserChange()"></ng5-slider>
+    -->
+    <div #chart style="width: 90%; height: 500px; margin: 0 auto;"></div>
 </div>
-<div class="container survey text-center">
+<div *ngIf="datasets" class="container survey text-center">
     <p *ngIf="surveyStatus">{{surveyStatus}}</p>
     <table *ngIf="!surveyStatus && answers" class="table">
         <thead>
