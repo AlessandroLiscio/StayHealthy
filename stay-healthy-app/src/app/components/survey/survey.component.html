@@ -1,4 +1,13 @@
 <body class="component text-center">
-    <p *ngIf="loadingStatus" class="status">{{loadingStatus}}</p>
-    <div id="surveyContainer"></div>
+    <h3>{{survey.title}}</h3>
+    <table>
+        <tr *ngFor="let question of survey.questions">
+            <td>
+                <p>{{question.title}}</p>
+            </td>
+            <td *ngFor="let choice of question.choices">
+                <img src="{{choice.image}}" (click)="setValue(question, choice)">
+            </td>
+        </tr>
+    </table>
 </body>

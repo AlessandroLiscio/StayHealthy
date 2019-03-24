@@ -1,11 +1,11 @@
-import { Page } from "./page";
+import { Question } from './question';
 
 export class Survey{
     title: string;
-    pages: Page[];
+    questions: Question[];
 
-    constructor(title: string){
+    constructor(title: string, questions: Question[]){
         this.title = title;
-        this.pages = [];
+        this.questions = questions;
     }
 }

@@ -1,9 +1,11 @@
 export class Choice{
+    name: string;
     value: number;
-    text: string;
+    image: string;
 
-    constructor(value: number, text: string){
+    constructor(name: string, value: number, image: string){
+        this.name = name;
         this.value = value;
-        this.text = text;
+        this.image = image;
     }
 }

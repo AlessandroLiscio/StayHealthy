@@ -6,7 +6,6 @@ import { PatientService } from 'src/app/services/patient.service';
 import { GraphDrawer } from 'src/app/models/history/graphDrawer';
 import { Patient } from 'src/app/models/patient/patient';
 import { ActivityFrame } from 'src/app/miband/activityframe';
-import { PatientSurvey } from 'src/app/models/survey/patientSurvey';
 import { SurveyService } from 'src/app/services/survey.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 

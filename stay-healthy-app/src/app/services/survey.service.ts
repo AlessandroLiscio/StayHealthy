@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ResponseSurvey } from '../models/survey/responseSurvey';
-import { PatientSurvey } from '../models/survey/patientSurvey';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -20,7 +18,7 @@ export class SurveyService {
 
   constructor(private http: HttpClient) { }
 
-  
+  /*
   public getSurvey(): Observable<ResponseSurvey>{
     return this.http.get<ResponseSurvey>("/api/survey?id=PHQ-9");
   }
@@ -29,7 +27,7 @@ export class SurveyService {
     let body = JSON.stringify(survey);
     return this.http.post("/api/patient_survey", body, httpOptions);
   }
-
+*/
   getCompiledSurvey(ssn: string, date: string){
     return this.http.get("/api/patient_survey?patient_ssn=" + ssn + "&date=" + date);
   }

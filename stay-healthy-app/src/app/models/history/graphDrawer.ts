@@ -6,9 +6,6 @@ import { Options } from 'ng5-slider';
 import * as moment from 'moment';
 import * as Plotly from 'plotly.js';
 import { SurveyService } from '../../services/survey.service';
-import { PatientSurvey } from '../survey/patientSurvey';
-import { ResponseSurvey } from '../survey/responseSurvey';
-import { DisplayableAnswer } from '../survey/displayableAnswer';
 import { AuthorizationService } from '../../services/authorization.service';
 
 const OPTIONS = {
@@ -68,9 +65,7 @@ export abstract class GraphDrawer {
   public chart_type: string;
   public minutes_offset: number;
   public startingTime: string;
-  public survey: PatientSurvey;
   public surveyStatus: string = "Nessun questionario presente per questa data";
-  public answers: DisplayableAnswer[];
 
   //hr handling
   public invalids: number[] = [];
@@ -78,7 +73,6 @@ export abstract class GraphDrawer {
 
 
   constructor(protected historyService: HistoryService, protected surveyService: SurveyService, protected authorizationService: AuthorizationService) {
-    this.answers = [];
     this.labels = [];
     this.activity = [];
     this.heart = [];
@@ -210,32 +204,6 @@ export abstract class GraphDrawer {
           }
           console.log(error);
         })
-    this.surveyService.getCompiledSurvey(ssn, date)
-      .subscribe((patientSurvey: PatientSurvey) => {
-        this.surveyStatus = null;
-        this.surveyService.getSurvey()
-          .subscribe((survey: ResponseSurvey) => {
-            for (let i = 0; i < survey.questions.length; i++) {
-              survey.questions[i].choices.forEach(choice => {
-                if (choice.value == patientSurvey.answers[i] && choice.value != null) {
-                  this.answers.push(new DisplayableAnswer(survey.questions[i].text, choice.text, patientSurvey.answers[i]));
-                }
-              });
-            }
-          },
-            error => {
-              if (error.status == 401) {
-                this.authorizationService.isAuthorized$.next(false);
-              }
-              this.surveyStatus = "C'è stato un errore nel recupero del modello del quesitonario";
-            })
-      },
-        error => {
-          if (error.status == 401) {
-            this.authorizationService.isAuthorized$.next(false);
-          }
-          this.surveyStatus = "Nessun questionario presente per questa data";
-        })
   }
 
 
@@ -245,7 +213,6 @@ export abstract class GraphDrawer {
     this.labels = [];
     this.activity = [];
     this.heart = [];
-    this.answers = [];
   }
 
   /*
