@@ -170,34 +170,6 @@ module.exports = function (app, passport) {
         }
     })
 
-<<<<<<< HEAD
-=======
-    //------------------------------------------------------/api/choice-------------------------------------------//
-
-    // GET choice
-    app.get('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await choiceCtrl.getChoice(req)
-            sendServerResponse(req, res, serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
-    // POST choice
-    app.post('/api/choice', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await choiceCtrl.postChoice(req)
-            sendServerResponse(req,res,serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
-
->>>>>>> 9cde78756d28ff1a29aa5964909dadd3d43fc5e3
     //------------------------------------------------------/api/doctor-------------------------------------------//
     // GET doctor
     app.get('/api/doctor', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
@@ -351,33 +323,6 @@ module.exports = function (app, passport) {
                 .send(err)
         }
     })
-<<<<<<< HEAD
-=======
-    //------------------------------------------------------/api/question-------------------------------------------//
-
-    // GET question
-    app.get('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await questionCtrl.getQuestion(req)
-            sendServerResponse(req, res, serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
-    // POST question
-    app.post('/api/question', isLoggedIn, isAuthorized, async (req: Request, res: Response) => {
-        try {
-            serverResponse = await questionCtrl.postQuestion(req)
-            sendServerResponse(req, res, serverResponse)
-        }
-        catch (err) {
-            res.status(500)
-                .send(err)
-        }
-    })
->>>>>>> 9cde78756d28ff1a29aa5964909dadd3d43fc5e3
 
     //------------------------------------------------------/api/survey-------------------------------------------//
     // GET survey
