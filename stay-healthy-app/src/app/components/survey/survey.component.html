@@ -1,8 +1,8 @@
 <body class="component text-center">
-    <div *ngIf="!isLoadingCompleted$">
+    <div *ngIf="!isLoadingCompleted" class="status">
         <p >{{loadingStatus}}</p>
     </div>
-    <div *ngIf="isLoadingCompleted$">
+    <div *ngIf="isLoadingCompleted && sendingStatus != SENT">
         <h3>{{survey.title}}</h3>
         <div *ngFor="let question of survey.questions">
             <p>{{question.title}}</p>
@@ -15,5 +15,6 @@
             </table>
         </div>
         <button id="miband_button" class="btn btn-default" (click)="submit()">Invia</button>
+        <p *ngIf="sendingStatus">{{sentStatus}}</p>
     </div>
 </body>

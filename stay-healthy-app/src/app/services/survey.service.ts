@@ -27,6 +27,7 @@ export class SurveyService {
 
   public sendSurvey(survey: PatientSurvey){
     let body = JSON.stringify(survey);
+    console.log(body)
     return this.http.post("/api/patient_survey", body, httpOptions);
   }
 

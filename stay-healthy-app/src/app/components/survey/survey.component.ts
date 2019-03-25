@@ -8,7 +8,7 @@ import { Patient } from 'src/app/models/patient/patient';
 import { AuthorizationService } from 'src/app/services/authorization.service';
 import { ResponseSurvey } from 'src/app/models/survey/responseSurvey';
 import { images } from 'src/app/models/survey/images';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { PatientSurvey } from 'src/app/models/survey/patientSurvey';
 
 
@@ -24,7 +24,9 @@ export class SurveyComponent implements OnInit {
   public answers: number[] = [null, null, null];
   public loadingStatus: string;
   public patient: Patient;
-  public isLoadingCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public isLoadingCompleted: boolean = false;
+  public sentStatus: string = "Invio del questionario in corso";
+  public sendingStatus: string;
 
 
   constructor(private surveyService: SurveyService, private authorizationService: AuthorizationService) {
@@ -52,8 +54,30 @@ export class SurveyComponent implements OnInit {
   }
 
   public submit(){
-    let surveyToSend = new PatientSurvey();
-    
+    if(this.answers.includes(null)){
+      this.sendingStatus = "ERROR";
+      this.sentStatus = "Per favore, rispondere a tutte le domande.";
+    }
+    else{
+      let surveyToSend = new PatientSurvey(this.patient.ssn, new Date(Date.now()).toISOString(), this.survey.id, this.answers);
+      this.surveyService.sendSurvey(surveyToSend)
+        .subscribe((res: any) => {
+          console.log(res);
+          this.sendingStatus = "SENT";
+          this.sentStatus = "Questionario inviato con successo!";
+        },
+        error => {
+          if(error.status == 401){
+            this.authorizationService.isAuthorized$.next(false);
+          }
+          else{
+            this.sendingStatus = "ERROR"
+            this.sentStatus = "Errore nell'invio del questionario";
+            console.log(error)
+          }
+        })
+    }
+
   }
 
   private getSurvey(){
@@ -67,7 +91,7 @@ export class SurveyComponent implements OnInit {
         }
         this.surveyService.getSurvey()
           .subscribe((res: ResponseSurvey) => {
-            this.survey = new Survey(res.title);
+            this.survey = new Survey(res.id, res.title);
             for(let i = 0; i < res.questions.length; i++){
               let choices: Choice[] = [];
               for(let i = 0; i < 6; i++){
@@ -77,7 +101,7 @@ export class SurveyComponent implements OnInit {
               let newQuestion = new Question(i, res.questions[i], choices);
               this.survey.questions.push(newQuestion);
             }
-            this.isLoadingCompleted$.next(true);
+            this.isLoadingCompleted = true;
           },
           error => {
             if(error.status == 401){

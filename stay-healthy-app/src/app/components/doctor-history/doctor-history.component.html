@@ -6,7 +6,7 @@
     </div>
     <div class="container" style="overflow: auto;">
         <div class="col-centered text-center">
-            <p>Seleziona il periodo da visualizzare</p>
+            <p>Seleziona la data da visualizzare</p>
             <input class="form-control text-center" placeholder="yyyy-mm-dd" name="d" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" (ngModelChange)=" searchHistory($event)">
         </div>
    <!--
