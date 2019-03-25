@@ -1,10 +1,8 @@
 export class Choice{
-    name: string;
     value: number;
     image: string;
 
-    constructor(name: string, value: number, image: string){
-        this.name = name;
+    constructor(value: number, image: string){
         this.value = value;
         this.image = image;
     }

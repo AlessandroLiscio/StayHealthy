@@ -32,5 +32,11 @@ table{
 }
 
 td{
-    padding-top: 50px;
+    padding-bottom: 50px;
 }
+
+#miband_button {
+    background:rgb(216,45,113);
+    color: white;
+  }
+

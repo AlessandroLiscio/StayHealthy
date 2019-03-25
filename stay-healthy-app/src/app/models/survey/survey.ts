@@ -4,8 +4,8 @@ export class Survey{
     title: string;
     questions: Question[];
 
-    constructor(title: string, questions: Question[]){
+    constructor(title: string){
         this.title = title;
-        this.questions = questions;
+        this.questions = [];
     }
 }

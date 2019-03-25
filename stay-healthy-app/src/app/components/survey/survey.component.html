@@ -1,13 +1,19 @@
 <body class="component text-center">
-    <h3>{{survey.title}}</h3>
-    <table>
-        <tr *ngFor="let question of survey.questions">
-            <td>
-                <p>{{question.title}}</p>
-            </td>
-            <td *ngFor="let choice of question.choices">
-                <img src="{{choice.image}}" (click)="setValue(question, choice)">
-            </td>
-        </tr>
-    </table>
+    <div *ngIf="!isLoadingCompleted$">
+        <p >{{loadingStatus}}</p>
+    </div>
+    <div *ngIf="isLoadingCompleted$">
+        <h3>{{survey.title}}</h3>
+        <div *ngFor="let question of survey.questions">
+            <p>{{question.title}}</p>
+            <table>
+                <tr>
+                    <td *ngFor="let choice of question.choices">
+                        <img src="{{choice.image}}" (click)="setValue(question, choice)">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <button id="miband_button" class="btn btn-default" (click)="submit()">Invia</button>
+    </div>
 </body>

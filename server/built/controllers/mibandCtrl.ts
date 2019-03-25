@@ -65,6 +65,7 @@ export class MibandCtrl extends TableCtrl {
         }
         // else, proceed with the query
         this.result = await this.dbManager.postData(this.sql, data)
+        console.log(this.result);
         await this.handleLastFetchDate(this.result, req, currentLastFetchDate, newLastFetchDate)
 
         return this.result

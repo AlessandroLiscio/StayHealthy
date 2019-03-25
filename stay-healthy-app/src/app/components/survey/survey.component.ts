@@ -6,15 +6,12 @@ import { Choice } from 'src/app/models/survey/chioce';
 import { Question } from 'src/app/models/survey/question';
 import { Patient } from 'src/app/models/patient/patient';
 import { AuthorizationService } from 'src/app/services/authorization.service';
+import { ResponseSurvey } from 'src/app/models/survey/responseSurvey';
+import { images } from 'src/app/models/survey/images';
+import { BehaviorSubject } from 'rxjs';
+import { PatientSurvey } from 'src/app/models/survey/patientSurvey';
 
-const images: {imageNotSelected: string, imageSelected: string}[] = [
-  {imageNotSelected: "../../../assets/img/0v.jpeg", imageSelected: "../../../assets/img/0.jpeg" },
-  {imageNotSelected: "../../../assets/img/1v.jpeg", imageSelected: "../../../assets/img/1.jpeg" },
-  {imageNotSelected: "../../../assets/img/2v.jpeg", imageSelected: "../../../assets/img/2.jpeg" },
-  {imageNotSelected: "../../../assets/img/3v.jpeg", imageSelected: "../../../assets/img/3.jpeg" },
-  {imageNotSelected: "../../../assets/img/4v.jpeg", imageSelected: "../../../assets/img/4.jpeg" },
-  {imageNotSelected: "../../../assets/img/5v.jpeg", imageSelected: "../../../assets/img/5.jpeg" }
-];
+
 
 @Component({
   selector: 'app-survey',
@@ -23,50 +20,11 @@ const images: {imageNotSelected: string, imageSelected: string}[] = [
 })
 export class SurveyComponent implements OnInit {
 
-  public survey: Survey = {
-    title: "Questionario giornaliero",
-    questions: [
-      {
-        id: 0,
-        title: 'Depressione',
-        choices: [
-          { name: "zero", value: 0, image: images[0].imageNotSelected },
-          { name: "one", value: 1, image: images[1].imageNotSelected },
-          { name: "two", value: 2, image: images[2].imageNotSelected },
-          { name: "three", value: 3, image: images[3].imageNotSelected },
-          { name: "four", value: 4, image: images[4].imageNotSelected },
-          { name: "five", value: 5, image: images[5].imageNotSelected }
-        ]
-      },
-      {
-        id: 1,
-        title: 'Dolore',
-        choices: [
-          { name: "zero", value: 0, image: images[0].imageNotSelected },
-          { name: "one", value: 1, image: images[1].imageNotSelected },
-          { name: "two", value: 2, image: images[2].imageNotSelected },
-          { name: "three", value: 3, image: images[3].imageNotSelected },
-          { name: "four", value: 4, image: images[4].imageNotSelected },
-          { name: "five", value: 5, image: images[5].imageNotSelected }
-        ]
-      },
-      {
-        id: 2,
-        title: 'Stato di salute',
-        choices: [
-          { name: "zero", value: 0, image: images[0].imageNotSelected },
-          { name: "one", value: 1, image: images[1].imageNotSelected },
-          { name: "two", value: 2, image: images[2].imageNotSelected },
-          { name: "three", value: 3, image: images[3].imageNotSelected },
-          { name: "four", value: 4, image: images[4].imageNotSelected },
-          { name: "five", value: 5, image: images[5].imageNotSelected }
-        ]
-      }
-    ]
-  }
+  public survey: Survey;
   public answers: number[] = [null, null, null];
   public loadingStatus: string;
   public patient: Patient;
+  public isLoadingCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 
   constructor(private surveyService: SurveyService, private authorizationService: AuthorizationService) {
@@ -75,7 +33,7 @@ export class SurveyComponent implements OnInit {
 
   ngOnInit() {
     this.loadingStatus = "Caricamento del questionario in corso";
-    //this.getSurvey();
+    this.getSurvey();
   }
 
   public setValue(question: Question, choice: Choice) {
@@ -92,6 +50,45 @@ export class SurveyComponent implements OnInit {
       }
     })
   }
+
+  public submit(){
+    let surveyToSend = new PatientSurvey();
+    
+  }
+
+  private getSurvey(){
+    this.surveyService.getCompiledSurvey(this.patient.ssn, new Date(Date.now()).toISOString())
+      .subscribe(res => {
+        this.loadingStatus = "Il questionario è già stato compilato oggi, torna domani!";
+      },
+      error => {
+        if(error.status == 401){
+          this.authorizationService.isAuthorized$.next(false);
+        }
+        this.surveyService.getSurvey()
+          .subscribe((res: ResponseSurvey) => {
+            this.survey = new Survey(res.title);
+            for(let i = 0; i < res.questions.length; i++){
+              let choices: Choice[] = [];
+              for(let i = 0; i < 6; i++){
+                let choice = new Choice(i, images[i].imageNotSelected);
+                choices.push(choice);
+              }
+              let newQuestion = new Question(i, res.questions[i], choices);
+              this.survey.questions.push(newQuestion);
+            }
+            this.isLoadingCompleted$.next(true);
+          },
+          error => {
+            if(error.status == 401){
+              this.authorizationService.isAuthorized$.next(false);
+            }
+            else{
+              this.loadingStatus = "Errore nel caricamento del questionario";
+            }
+          })
+      })
+}
   /*
   //get survey from server
   private getSurvey() {
