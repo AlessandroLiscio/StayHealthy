@@ -26,7 +26,7 @@ export class SurveyComponent implements OnInit {
   public patient: Patient;
   public isLoadingCompleted: boolean = false;
   public sentStatus: string = "Invio del questionario in corso";
-  public sendingStatus: string;
+  public sendingStatus: string = "NOT_SENT";
 
 
   constructor(private surveyService: SurveyService, private authorizationService: AuthorizationService) {
@@ -89,6 +89,7 @@ export class SurveyComponent implements OnInit {
         if(error.status == 401){
           this.authorizationService.isAuthorized$.next(false);
         }
+        console.log("ok")
         this.surveyService.getSurvey()
           .subscribe((res: ResponseSurvey) => {
             this.survey = new Survey(res.id, res.title);
@@ -108,6 +109,7 @@ export class SurveyComponent implements OnInit {
               this.authorizationService.isAuthorized$.next(false);
             }
             else{
+              console.log(error)
               this.loadingStatus = "Errore nel caricamento del questionario";
             }
           })
