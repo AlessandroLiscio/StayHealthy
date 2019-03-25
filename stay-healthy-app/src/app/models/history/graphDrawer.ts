@@ -7,6 +7,10 @@ import * as moment from 'moment';
 import * as Plotly from 'plotly.js';
 import { SurveyService } from '../../services/survey.service';
 import { AuthorizationService } from '../../services/authorization.service';
+import { PatientSurvey } from '../survey/patientSurvey';
+import { ResponseSurvey } from 'src/app/models/survey/responseSurvey';
+import { Choice } from '../survey/chioce';
+import { images } from '../survey/images';
 
 const OPTIONS = {
   //responsive: true,
@@ -66,6 +70,8 @@ export abstract class GraphDrawer {
   public minutes_offset: number;
   public startingTime: string;
   public surveyStatus: string = "Nessun questionario presente per questa data";
+  public questions: string[];
+  public answers: Choice[];
 
   //hr handling
   public invalids: number[] = [];
@@ -77,55 +83,10 @@ export abstract class GraphDrawer {
     this.activity = [];
     this.heart = [];
     this.time = [];
-    /*
-    this.graphOptions = {
-      //responsive: true,
-      maintainAspectRatio: false,
-      elements:
-      {
-        point:
-        {
-          radius: 1,
-          hitRadius: 5,
-          hoverRadius: 10,
-          hoverBorderWidth: 2
-        }
-      },
-      scales: {
-        xAxes: [{
-          ticks: {
-            //minRotation: 90,
-            autoSkip: true
-          },
-          gridLines: {
-            display: false
-          },
-          scaleLabel: {
-            filter: (label: string): boolean => {
-              return this.showLabelsBasedOnWindow(label)
-            }
-          }
-        }]
-      }
-    };
-    this.chart_type = CHART_TYPE;
-    this.minutes_offset = MINUTES_OFFSET;
-    */
+    this.answers = [];
+    this.questions = [];
   }
-
-  /*
-  public onUserChange() {
-    this.drawGraph();
-  }
-  */
   drawGraph() {
-    /*
-    this.labels = this.time.slice(this.minutes_offset, this.minutes_offset + MINUTES_INTERVAL);
-    this.datasets = [
-      { data: this.activity.slice(this.minutes_offset, this.minutes_offset + MINUTES_INTERVAL), label: "activity" },
-      { data: this.heart.slice(this.minutes_offset, this.minutes_offset + MINUTES_INTERVAL), label: "heart rate" }
-    ];
-    */
 
 
     this.datasets =
@@ -186,16 +147,6 @@ export abstract class GraphDrawer {
           this.activity.push(activity.intensity);
           this.handleHeartRate(activity.heart_rate);
         });
-        /*
-        this.sliderOptions = {
-          floor: 0,
-          ceil: this.time.length - MINUTES_TICK,
-          step: MINUTES_TICK,
-          translate: (value: number): string => {
-            return this.translate(value)
-          }
-        };
-        */
         this.drawGraph();
       },
         error => {
@@ -203,7 +154,31 @@ export abstract class GraphDrawer {
             this.authorizationService.isAuthorized$.next(false);
           }
           console.log(error);
+        });
+    this.surveyService.getCompiledSurvey(ssn, date)
+      .subscribe((res: PatientSurvey) => {
+        this.surveyStatus = null;
+        res.answers.forEach(answer => {
+          let choice = new Choice(answer, images[answer].imageSelected);
+          this.answers.push(choice);
         })
+        this.surveyService.getSurvey()
+          .subscribe((res: ResponseSurvey) => {
+            this.questions = res.questions;
+          },
+          error => {
+            if (error.status == 401) {
+              this.authorizationService.isAuthorized$.next(false);
+            }
+            this.surveyStatus = "C'è stato un errore nel recupero del modello del quesitonario";
+          })
+      },
+      error => {
+        if (error.status == 401) {
+          this.authorizationService.isAuthorized$.next(false);
+        }
+        this.surveyStatus = "Nessun questionario presente per questa data";
+      })
   }
 
 
@@ -213,21 +188,9 @@ export abstract class GraphDrawer {
     this.labels = [];
     this.activity = [];
     this.heart = [];
+    this.questions = [];
+    this.answers = [];
   }
-
-  /*
-    private translate(value: number): string {
-      return this.getHoursAndMinutes(value) + "-" + this.getHoursAndMinutes(value + MINUTES_TICK);
-    }
-    private getHoursAndMinutes(value: number): string {
-      let date = moment(this.startingTime).add(value, 'minutes');
-      return date.get('hours') + ":" + date.get('minutes');
-    }
-  
-    private showLabelsBasedOnWindow(label: string): boolean {
-      return (this.time.indexOf(label) % this.labelsInterval) == 0;
-    }
-  */
   private handleHeartRate(heart: number) {
     if (heart == 255) {
       this.invalids.push(heart);

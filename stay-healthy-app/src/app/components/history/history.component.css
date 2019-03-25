@@ -11,3 +11,17 @@
     float: none;
     width: 80%;
 }
+
+@media (min-width: 600px){
+    img{
+        width: 80px;
+        height: auto;
+    }
+}
+
+@media (max-width: 600px){
+    img{
+        width: 40px;
+        height: auto;
+    }
+}
