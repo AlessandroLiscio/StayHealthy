@@ -6,6 +6,8 @@ import { CustomError } from "../models/customError"
 
 export class MibandCtrl extends TableCtrl {
 
+    public PythonShell = require('python-shell');
+
     public async getData(req: Request): Promise<any> {
 
         this.sql = 'SELECT * FROM miband WHERE (patient_ssn = $1 AND (timestamp >= $2 AND timestamp <= $3)) ORDER BY timestamp ASC'
@@ -34,6 +36,8 @@ export class MibandCtrl extends TableCtrl {
     }
 
     public async postData(req: Request): Promise<any> {
+        //run random forest
+        
         // get the user's last fetch date from the db
         var data: any[] = []
         var newLastFetchDate = new Date()
