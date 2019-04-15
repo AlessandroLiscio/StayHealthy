@@ -2,7 +2,6 @@ import { Request } from "express"
 import { Miband } from "../models/models"
 import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
-var fs = require('fs');
 
 export class MibandCtrl extends TableCtrl {
 
@@ -61,19 +60,13 @@ export class MibandCtrl extends TableCtrl {
                 newLastFetchDate = new Date(element.timestamp)
             }
         }
-        /*
-        *
-        *
-        * HERE THE RANDOM FOREST CODE WILL BE RUN 
-        * 
-        * 
-        */
         // if no data was added to the array, return alert message
         if (!(data[0])) {
             this.error.name = "DATA ERROR"
             this.error.details = ("No data more recent than: " + currentLastFetchDate + ".")
             return this.error
         }
+
         // else, proceed with the query
         this.result = await this.dbManager.postData(this.sql, data)
         console.log(this.result);
