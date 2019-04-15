@@ -4,6 +4,7 @@ import { Patient } from './models/models'
 import * as controllers from './controllers/controllers'
 import * as url from 'url'
 import * as path from 'path'
+var PythonShell = require('python-shell');
 
 module.exports = function (app, passport) {
 
@@ -116,8 +117,45 @@ module.exports = function (app, passport) {
 
     //-----------------------------------------------------APPLICATION-------------------------------------------//
     app.get(/^((?!\/api).)*$/, (req: Request, res: Response, next) => {
-        res.sendFile(path.join(__dirname, '../public/index.html'))
+        //res.sendFile(path.join(__dirname, '../public/index.html'))
+        res.send('barbaraann')
     })
+
+    app.post('/api/rf', function (req: Request, res: Response) {
+
+        // get the user's last fetch date from the db
+        var data: any[] = []
+        var params: any[] =[]
+
+        for (let element of req.body) {
+            // add only those element whoose date is more recente then the last last fetch date
+                params = [
+                    req.query.patient_ssn,
+                    element.timestamp,
+                    element.activity,
+                    element.intensity,
+                    element.steps,
+                    element.heart_rate
+                ]
+                data.push(this.params)
+        }
+        if (!(data[0])) {
+            console.log("DATA ERROR")
+            console.log("Data is empty")
+        }
+        var options = {
+            args:
+            [
+                'Random_Forest_model.sav',
+                JSON.stringify(data)
+            ]
+        }
+        PythonShell.run('./Predictor.py', options, function (err, data) {
+            if (err) res.send(err);
+            res.status(200).send(data.toString())
+          });
+    })
+    
     //------------------------------------------------------/api/login-------------------------------------------//
     // GET login
     app.get('/api/login', function (req: Request, res: Response) {
@@ -127,7 +165,6 @@ module.exports = function (app, passport) {
         else {
             res.status(200).send({ ErrorMessage: 'Damn, you are not authenticated' })
         }
-
     })
 
     //POST login
