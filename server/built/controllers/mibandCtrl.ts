@@ -57,7 +57,12 @@ export class MibandCtrl extends TableCtrl {
                 newLastFetchDate = new Date(element.timestamp)
             }
         }
-        
+        // save data to json
+        fs.writeFile("userData.json", req.body, function(err) {
+            if (err) {
+                console.log(err);
+            }
+        });
         // if no data was added to the array, return alert message
         if (!(data[0])) {
             this.error.name = "DATA ERROR"
