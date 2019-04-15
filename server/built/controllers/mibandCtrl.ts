@@ -2,7 +2,7 @@ import { Request } from "express"
 import { Miband } from "../models/models"
 import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
-
+var fs = require('fs');
 
 export class MibandCtrl extends TableCtrl {
 
@@ -57,6 +57,7 @@ export class MibandCtrl extends TableCtrl {
                 newLastFetchDate = new Date(element.timestamp)
             }
         }
+        
         // if no data was added to the array, return alert message
         if (!(data[0])) {
             this.error.name = "DATA ERROR"
