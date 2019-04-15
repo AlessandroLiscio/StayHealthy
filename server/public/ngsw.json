@@ -1,0 +1,163 @@
+{
+  "configVersion": 1,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/index.html",
+        "/main.d8eaa574a5e82442d82f.js",
+        "/polyfills.241125388fe38199cfd3.js",
+        "/runtime.b57bf819d5bdce77f1c7.js",
+        "/scripts.f6fc5e48d10095a84008.js",
+        "/styles.bdd2899dc74dc56e7023.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/img/0.jpeg",
+        "/assets/img/0v.jpeg",
+        "/assets/img/1.jpeg",
+        "/assets/img/1v.jpeg",
+        "/assets/img/2.jpeg",
+        "/assets/img/2v.jpeg",
+        "/assets/img/3.jpeg",
+        "/assets/img/3v.jpeg",
+        "/assets/img/4.jpeg",
+        "/assets/img/4v.jpeg",
+        "/assets/img/5.jpeg",
+        "/assets/img/5v.jpeg",
+        "/assets/img/logo.jpeg",
+        "/assets/img/logo.png",
+        "/favicon.ico",
+        "/fontawesome-webfont.674f50d287a8c48dc19b.eot",
+        "/fontawesome-webfont.acf3dcb7ff752b5296ca.svg",
+        "/fontawesome-webfont.af7ae505a9eed503f8b8.woff2",
+        "/fontawesome-webfont.b06871f281fee6b241d6.ttf",
+        "/fontawesome-webfont.fee66e712a8a08eef580.woff"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "patient",
+      "patterns": [
+        "\\/api\\/patient"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "doctor",
+      "patterns": [
+        "\\/api\\/doctor"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "survey",
+      "patterns": [
+        "\\/api\\/survey",
+        "\\/api\\/patient_survey"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "miband",
+      "patterns": [
+        "\\/api\\/miband"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    },
+    {
+      "name": "messages",
+      "patterns": [
+        "\\/api\\/messages\\/user"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/assets/icons/icon-128x128.png": "e535187c51336ee6353eb9b8c1036f16df4909ef",
+    "/assets/icons/icon-144x144.png": "416c1c27bf5904e4245cb8010abd8eb1b52930cd",
+    "/assets/icons/icon-152x152.png": "89fef19506a92d664d643b15c4877e3a79d46be7",
+    "/assets/icons/icon-192x192.png": "2c623ba6cf81edc7b854f2d2949ed461cb7fc6de",
+    "/assets/icons/icon-384x384.png": "0d915c062602398100e09c205221bbe5ae4adf7d",
+    "/assets/icons/icon-512x512.png": "991fb73002aa1f357d67cb651afd2f6e94dd1bb0",
+    "/assets/icons/icon-72x72.png": "a9e13a826684f83b6808c5e7b26a7cec93f0c0b9",
+    "/assets/icons/icon-96x96.png": "20b558d0462dda35e8e0703c94d80fab68eef674",
+    "/assets/img/0.jpeg": "4c663764ca92ca1c922eba24e6a874b86dfc219d",
+    "/assets/img/0v.jpeg": "ca11ff1712d25221140f0cc5bee5f4a0461b8d45",
+    "/assets/img/1.jpeg": "0a6b6cd2180dfc5b52f6cbdd7805cede3dd0df6e",
+    "/assets/img/1v.jpeg": "0dc02a1d2305c344a27ffe3dd9dbf0582a9c129e",
+    "/assets/img/2.jpeg": "8b555808eb7cff0035ae111deb74dd19eba9d770",
+    "/assets/img/2v.jpeg": "bf08400b073ad5782deade3aab225aff1e8a56ad",
+    "/assets/img/3.jpeg": "d62861821dc28a1d0e5f68798cf5e98d7efa4827",
+    "/assets/img/3v.jpeg": "d9bc7c91553cf3606bb68872905da55a5fc09f3e",
+    "/assets/img/4.jpeg": "d103341c76a2c0fb0e5061ad87a40002c5ba11c8",
+    "/assets/img/4v.jpeg": "f1ba7ecb722e0f38ed24395c6892652cafa54f8f",
+    "/assets/img/5.jpeg": "c9ba1382280d554f67f85b41a62382c1b35d70cb",
+    "/assets/img/5v.jpeg": "ff8084360fa53b78839f73ec93db3c46714e3a4d",
+    "/assets/img/logo.jpeg": "837b0c936950cf254c81406a13b8d483c29424bc",
+    "/assets/img/logo.png": "f7ce071f688faf3ba14e43078ec7a50a1d4c6e76",
+    "/favicon.ico": "127fe8109bdddf97d2b385631d74889032e7e734",
+    "/fontawesome-webfont.674f50d287a8c48dc19b.eot": "d980c2ce873dc43af460d4d572d441304499f400",
+    "/fontawesome-webfont.acf3dcb7ff752b5296ca.svg": "b5483b11f8ba213e733b5b8af9927a04fec996f6",
+    "/fontawesome-webfont.af7ae505a9eed503f8b8.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
+    "/fontawesome-webfont.b06871f281fee6b241d6.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
+    "/fontawesome-webfont.fee66e712a8a08eef580.woff": "28b782240b3e76db824e12c02754a9731a167527",
+    "/index.html": "927dcc4f1273a23c849386fc2fecb5e7ecc40937",
+    "/main.d8eaa574a5e82442d82f.js": "af13af902d6181a8d174a3afc9c9ddad86b4e07f",
+    "/polyfills.241125388fe38199cfd3.js": "98fabcfeb17a9410a2d30ec3998a284b621ef848",
+    "/runtime.b57bf819d5bdce77f1c7.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
+    "/scripts.f6fc5e48d10095a84008.js": "b757ed92b3073a68693ff515d5d924c4edc50bc5",
+    "/styles.bdd2899dc74dc56e7023.css": "d780db77ee79714fac8c7a62d7b0fba23f15261a"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
