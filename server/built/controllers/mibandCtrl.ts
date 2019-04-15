@@ -2,7 +2,7 @@ import { Request } from "express"
 import { Miband } from "../models/models"
 import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
-
+var fs = require('fs');
 
 export class MibandCtrl extends TableCtrl {
 
@@ -57,6 +57,12 @@ export class MibandCtrl extends TableCtrl {
                 newLastFetchDate = new Date(element.timestamp)
             }
         }
+        // save data to json
+        fs.writeFile("userData.json", req.body, function(err) {
+            if (err) {
+                console.log(err);
+            }
+        });
         // if no data was added to the array, return alert message
         if (!(data[0])) {
             this.error.name = "DATA ERROR"
@@ -70,7 +76,7 @@ export class MibandCtrl extends TableCtrl {
         return this.result
     }
 
-    public async handleLastFetchDate(result: any, req: Request, currentLastFetchDate: Date, newLastFetchDate: Date) {
+    private async handleLastFetchDate(result: any, req: Request, currentLastFetchDate: Date, newLastFetchDate: Date) {
         // if no error is returned by the query, then update the user's last fetch date on the database and return the new last fetch date
         if (!(result instanceof Error || result instanceof CustomError)) {
             console.log('currentLastFetchDate: ', currentLastFetchDate)
@@ -84,7 +90,7 @@ export class MibandCtrl extends TableCtrl {
         }
     }
 
-    public async putLastFetchDate(patient_ssn: string, newLastFetchDate: Date): Promise<string> {
+    private async putLastFetchDate(patient_ssn: string, newLastFetchDate: Date): Promise<string> {
         this.sql = 'UPDATE patients SET last_fetch_date = $1 WHERE patient_ssn = $2'
         this.params = [
             newLastFetchDate,
@@ -95,7 +101,7 @@ export class MibandCtrl extends TableCtrl {
         return this.result
     }
 
-    public async getLastFetchDate(req: Request): Promise<any> {
+    private async getLastFetchDate(req: Request): Promise<any> {
         this.sql = 'SELECT last_fetch_date FROM patients WHERE patient_ssn = $1'
         this.params = [
             req.query.patient_ssn
@@ -104,7 +110,7 @@ export class MibandCtrl extends TableCtrl {
         return this.result
     }
 
-    public async deleteFromLastFetchDate(patient_ssn: string, last_fetch_date: Date): Promise<any> {
+    private async deleteFromLastFetchDate(patient_ssn: string, last_fetch_date: Date): Promise<any> {
         this.sql = 'DELETE FROM miband WHERE patient_ssn = $1 AND timestamp > $2'
         this.params = [
             patient_ssn,
