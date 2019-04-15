@@ -62,7 +62,7 @@ export class MibandCtrl extends TableCtrl {
             }
         }
         // save data to json
-        fs.writeFile("userData.json", req.body, function(err) {
+        fs.writeFile("userData.json", JSON.stringify(req.body), function(err) {
             if (err) {
                 console.log(err);
             }
