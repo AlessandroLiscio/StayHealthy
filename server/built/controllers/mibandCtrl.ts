@@ -61,12 +61,13 @@ export class MibandCtrl extends TableCtrl {
                 newLastFetchDate = new Date(element.timestamp)
             }
         }
-        // save data to json
-        fs.writeFile("userData.json", JSON.stringify(req.body), function(err) {
-            if (err) {
-                console.log(err);
-            }
-        });
+        /*
+        *
+        *
+        * HERE THE RANDOM FOREST CODE WILL BE RUN 
+        * 
+        * 
+        */
         // if no data was added to the array, return alert message
         if (!(data[0])) {
             this.error.name = "DATA ERROR"

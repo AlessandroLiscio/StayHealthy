@@ -72,6 +72,7 @@ export abstract class GraphDrawer {
   public surveyStatus: string = "Nessun questionario presente per questa data";
   public questions: string[];
   public answers: Choice[];
+  public shapes: any[];
 
   //hr handling
   public invalids: number[] = [];
@@ -110,6 +111,7 @@ export abstract class GraphDrawer {
         fill: 'tonexty'
       }];
     var style = {
+      shapes: this.shapes,
       margin: {
         l: 20,
         r: 20,
@@ -191,6 +193,7 @@ export abstract class GraphDrawer {
     this.questions = [];
     this.answers = [];
   }
+
   private handleHeartRate(heart: number) {
     if (heart == 255) {
       this.invalids.push(heart);
@@ -215,5 +218,42 @@ export abstract class GraphDrawer {
         this.invalids = [];
       }
     }
+  }
+
+  private addShapes(data: ActivityFrame[]){
+    let counter = 0;
+    while(counter < data.length - 1){
+      let x1 = data[counter].timestamp;
+      let is_sleeping = data[counter].is_sleeping;
+      let j = counter + 1;
+      //increase counter while data has same mode
+      while(data[j].is_sleeping == is_sleeping && j < data.length){
+        j++;
+      }
+      //data at position j has different mode
+      let x2 = data[j - 1].timestamp;
+      this.buildShape(x1, x2, is_sleeping);
+      x1 = data[j].timestamp;
+      counter = j;
+    }
+  }
+  private buildShape(x0: string, x1: string, is_sleeping: number){
+    let shape = {
+      type: 'rect',
+      // x-reference is assigned to the x-values
+      xref: 'x',
+      // y-reference is assigned to the plot paper [0,1]
+      yref: 'paper',
+      x0: moment(x0).get('hours') + ":" +  moment(x0).get('minutes'),
+      y0: 0,
+      x1: moment(x1).get('hours') + ":" +  moment(x1).get('minutes'),
+      y1: 1,
+      fillcolor: is_sleeping? 'rgb(0, 153, 255)' : 'rgb(216,45,113)',
+      opacity: 0.2,
+      line: {
+          width: 0
+      }
+    }
+    this.shapes.push(shape);
   }
 }

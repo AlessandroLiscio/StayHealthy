@@ -471,7 +471,7 @@ export class MiBand {
                 let heart: number = view.getUint8(3);
                 if(this.fetchDate){
                     //create activity frame, push into activity buffer and increment fetch time
-                    let activityFrame = new ActivityFrame(this.fetchDate.toString(), activity, intensity, steps, heart);
+                    let activityFrame = new ActivityFrame(this.fetchDate.toString(), activity, intensity, steps, heart, null);
                     this.activityBuffer.push(activityFrame);
                     this.fetchDate.incrementMinute();
                 }

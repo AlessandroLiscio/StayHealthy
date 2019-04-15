@@ -25,8 +25,8 @@ app.use(cookieParser()) // read cookies (needed for auth)
 app.use(bodyParser.json({ limit: '5mb'})) // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(compression())
-app.use(redirectToHTTPS())
-app.use(express.static(path.join(__dirname, '../public')))
+//app.use(redirectToHTTPS())
+//app.use(express.static(path.join(__dirname, '../public')))
 app.set('view engine', 'ejs') // set up ejs for templating
 
 // required for passport
@@ -42,7 +42,7 @@ app.use(passport.session()) // persistent login sessions
 require('./routes.ts')(app, passport) // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
- https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 443'))
- app.listen(80, ()=> console.log("Listening on port 80"))
+ //https.createServer(certOptions, app).listen(443, () => console.log('Server listening on port: 443'))
+ app.listen(3000, ()=> console.log("Listening on port 80"))
 //app.listen(process.env.PORT)
 //console.log('Server listening on port: ' + process.env.PORT)
