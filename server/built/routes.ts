@@ -162,20 +162,10 @@ module.exports = function (app, passport) {
             });
      
         })
-<<<<<<< HEAD
         pyshell.end((err, code, signal) => {
             if(err) throw err
             res.send(results)
         })
-=======
-        /*
-        PythonShell.run('../prova.py', options, function (err, data) {
-            if (err) res.send(err);
-            console.log(data)
-            res.status(200).send(data)
-          });
-          */
->>>>>>> 1d30a06122166c0243f88fc92879b1003ba35d90
     })
     
     //------------------------------------------------------/api/login-------------------------------------------//
