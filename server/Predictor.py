@@ -57,7 +57,13 @@ def main(argv):
     regressor = load(mFile)
     # load data from csv file
     global df
-    df = pd.read_json(iFile)
+    iFile = iFile.replace('/','"')
+    #df = pd.read_json(iFile)
+    global j
+    j = json.loads(iFile)
+    #print(iFile)
+    #print(j)
+    df = pd.DataFrame(j)
     
     counter1 = 0
     for index, row in df.iterrows():
@@ -88,20 +94,5 @@ def main(argv):
     final_df = final_data.join(predicted_df, how='outer')
     #final_df.to_csv(oFile, index = False)
     print(predicted_df.to_json(orient='records'))
-    
-    '''
-    Row_list =[] 
-  
-    # Iterate over each row 
-    for index, row in final_df.iterrows(): 
-        # Create list for the current row 
-        my_list =[str(row['timestamp']), row['intensity'], row['heart_rate'], row['is_sleeping']] 
-          
-        # append the list to the final list 
-        Row_list.append(my_list) 
-      
-    # Print the list 
-    print(Row_list) 
-    '''
 if __name__ == '__main__':
     main(sys.argv[1:])
