@@ -4,7 +4,7 @@ import { Patient } from './models/models'
 import * as controllers from './controllers/controllers'
 import * as url from 'url'
 import * as path from 'path'
-var PythonShell = require('python-shell');
+import { PythonShell } from 'python-shell'
 
 module.exports = function (app, passport) {
 
@@ -125,7 +125,7 @@ module.exports = function (app, passport) {
 
         // get the user's last fetch date from the db
         var data: any[] = []
-        var params: any[] =[]
+        var params: any[] = []
 
         for (let element of req.body) {
             // add only those element whoose date is more recente then the last last fetch date
@@ -137,7 +137,7 @@ module.exports = function (app, passport) {
                     element.steps,
                     element.heart_rate
                 ]
-                data.push(this.params)
+                data.push(params)
         }
         if (!(data[0])) {
             console.log("DATA ERROR")
@@ -146,14 +146,28 @@ module.exports = function (app, passport) {
         var options = {
             args:
             [
-                'Random_Forest_model.sav',
-                JSON.stringify(data)
-            ]
+                './Random_Forest_model.joblib',
+                './file.json',
+                './docan.csv'
+            ],
+            pythonPath: 'C:/Users/Giacomo Rocchetti/Python 3.7/python.exe',
+            pythonOptions: ['-u'],
+            scriptPath: './',
         }
-        PythonShell.run('./Predictor.py', options, function (err, data) {
+        var pyshell = new PythonShell('./Predictor.py', options);
+        pyshell.on('message', function (message) {
+
+            console.log(message); //value is correct
+            res.send(message); //error here
+     
+        })
+        /*
+        PythonShell.run('../provadiocan.py', options, function (err, data) {
             if (err) res.send(err);
-            res.status(200).send(data.toString())
+            console.log(data)
+            res.status(200).send(data)
           });
+          */
     })
     
     //------------------------------------------------------/api/login-------------------------------------------//

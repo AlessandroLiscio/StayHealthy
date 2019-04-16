@@ -1,5 +1,9 @@
+#!/usr/bin/python
 import pickle, sys, getopt
 import pandas as pd
+from pandas.io.json import json_normalize
+import json
+from joblib import load
 
 def main(argv):
     
@@ -52,9 +56,20 @@ def main(argv):
               ''')
         sys.exit(2)
     # load random forest regressor model from file
-    regressor = pickle.load(open(mFile, 'rb'))
+    regressor = load(mFile)
     # load data from csv file
     df = pd.read_json(iFile)
+    
+    counter1 = 0
+    for index, row in df.iterrows():
+        if(index == 0):
+            df.at[index, 'time_from_last_movement'] = 0
+        else:
+            if(df.loc[index, 'intensity'] > 0):
+                counter1 = 0
+            else:
+                counter1 += 1
+            df.at[index, 'time_from_last_movement'] = counter1
     
     #features array
     features = ['intensity',
@@ -70,6 +85,7 @@ def main(argv):
     # save data to csv
     input_df = pd.DataFrame(data=input_data, columns=features)
     predicted_df = pd.DataFrame(data=predicted_data, columns=['Predicted_Mode'])
+    global final_df
     final_df = input_df.join(predicted_df, how='outer')
     final_df.to_csv(oFile, index = False)
     print(final_df)
