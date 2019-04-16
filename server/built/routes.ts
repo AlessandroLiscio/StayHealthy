@@ -143,11 +143,12 @@ module.exports = function (app, passport) {
             console.log("DATA ERROR")
             console.log("Data is empty")
         }
+        var json = [{"timestamp":"2019-1-18T12:45","activity":96,"intensity":32,"steps":0,"heart_rate":255}]
         var options = {
             args:
             [
                 './Random_Forest_model.joblib',
-                './file.json'
+                JSON.stringify(json)
             ],
             pythonPath: 'C:/Users/Giacomo Rocchetti/Python 3.7/python.exe',
             pythonOptions: ['-u'],
@@ -165,6 +166,9 @@ module.exports = function (app, passport) {
         pyshell.end((err, code, signal) => {
             if(err) throw err
             res.send(results)
+            var obj: any = {"a":1, "b": "b"};
+            obj.c = "c"
+            console.log(obj)
         })
     })
     
