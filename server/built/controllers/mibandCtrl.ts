@@ -45,6 +45,7 @@ export class MibandCtrl extends TableCtrl {
         for (let element of req.body) {
             // add only those element whoose date is more recente then the last last fetch date
             if (new Date(element.timestamp) > newLastFetchDate) {
+                console.log(element.timestamp)
                 this.params = [
                     req.query.patient_ssn,
                     element.timestamp,
@@ -93,14 +94,18 @@ export class MibandCtrl extends TableCtrl {
         }
         var pyshell = new PythonShell(process.env.RFSCRITPPATH, options);
         var newData: any[]
-        pyshell.on('message', function (message) {
-            console.log(message);    
-            newData.push(message)
-            data
+        pyshell.on('message', function (result) {
+            result = JSON.parse(result)
+            result.forEach(element => {
+                newData.push(element.is_sleeping)
+            });
         })
         return new Promise((resolve, reject) => {
             pyshell.end((err,code,signal)=> {
-                resolve(newData)
+                for (let i = 0; i < data.length; i++) {
+                    data[i].is_sleeping = newData[i]
+                }
+                resolve(data)
                 if (err) reject(err)
             })
         })
