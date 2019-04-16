@@ -2,10 +2,10 @@ import { Request } from "express"
 import { Miband } from "../models/models"
 import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
+import { PythonShell } from 'python-shell'
+import { ENODEV } from "constants";
 
 export class MibandCtrl extends TableCtrl {
-
-    public PythonShell = require('python-shell');
 
     public async getData(req: Request): Promise<any> {
 
@@ -34,16 +34,14 @@ export class MibandCtrl extends TableCtrl {
         return this.result
     }
 
-    public async postData(req: Request): Promise<any> {
-        //run random forest
-        
+    public async postData(req: Request): Promise<any> {        
         // get the user's last fetch date from the db
         var data: any[] = []
         var newLastFetchDate = new Date()
         var currentLastFetchDate = (await this.getLastFetchDate(req)).rows[0].last_fetch_date
         newLastFetchDate = currentLastFetchDate
 
-        this.sql = 'INSERT INTO miband ( patient_ssn, timestamp, activity, intensity, steps, heart_rate ) VALUES ($1,$2,$3,$4,$5,$6)'
+        this.sql = 'INSERT INTO miband ( patient_ssn, timestamp, activity, intensity, heart_rate, is_sleeping ) VALUES ($1,$2,$3,$4,$5,$6)'
         for (let element of req.body) {
             // add only those element whoose date is more recente then the last last fetch date
             if (new Date(element.timestamp) > newLastFetchDate) {
@@ -52,7 +50,6 @@ export class MibandCtrl extends TableCtrl {
                     element.timestamp,
                     element.activity,
                     element.intensity,
-                    element.steps,
                     element.heart_rate
                 ]
                 data.push(this.params)
@@ -66,13 +63,48 @@ export class MibandCtrl extends TableCtrl {
             this.error.details = ("No data more recent than: " + currentLastFetchDate + ".")
             return this.error
         }
-
+        data = await this.PredictSleep(data)
+        for (let element of data){
+            this.params = [
+                req.query.patient_ssn,
+                element.timestamp,
+                element.activity,
+                element.intensity,
+                element.heart_rate
+            ]
+        }
         // else, proceed with the query
         this.result = await this.dbManager.postData(this.sql, data)
         console.log(this.result);
         await this.handleLastFetchDate(this.result, req, currentLastFetchDate, newLastFetchDate)
 
         return this.result
+    }
+
+    public async PredictSleep(data: any[]): Promise<any[]> {
+        var options = {
+            args:
+            [
+                process.env.RFMODELPATH,
+                './file.json',
+            ],
+            pythonPath: process.env.PYTHONPATH,
+            // scriptPath: './',
+        }
+        var pyshell = new PythonShell(process.env.RFSCRITPPATH, options);
+        var newData: any[]
+        pyshell.on('message', function (message) {
+            console.log(message);    
+            newData.push(message)
+            data
+        })
+        return new Promise((resolve, reject) => {
+            pyshell.end((err,code,signal)=> {
+                resolve(newData)
+                if (err) reject(err)
+            })
+        })
+        
     }
 
     public async handleLastFetchDate(result: any, req: Request, currentLastFetchDate: Date, newLastFetchDate: Date) {

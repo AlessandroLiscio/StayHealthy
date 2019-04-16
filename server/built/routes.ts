@@ -161,13 +161,6 @@ module.exports = function (app, passport) {
             res.send(message); //error here
      
         })
-        /*
-        PythonShell.run('../prova.py', options, function (err, data) {
-            if (err) res.send(err);
-            console.log(data)
-            res.status(200).send(data)
-          });
-          */
     })
     
     //------------------------------------------------------/api/login-------------------------------------------//
