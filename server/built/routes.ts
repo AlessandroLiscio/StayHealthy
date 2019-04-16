@@ -147,27 +147,25 @@ module.exports = function (app, passport) {
             args:
             [
                 './Random_Forest_model.joblib',
-                './file.json',
-                './docan.csv'
+                './file.json'
             ],
             pythonPath: 'C:/Users/Giacomo Rocchetti/Python 3.7/python.exe',
             pythonOptions: ['-u'],
             scriptPath: './',
         }
         var pyshell = new PythonShell('./Predictor.py', options);
-        pyshell.on('message', function (message) {
-
-            console.log(message); //value is correct
-            res.send(message); //error here
+        var results = [];
+        pyshell.on('message', function (result) {
+            result = JSON.parse(result)
+            result.forEach(element => {
+                results.push(element.is_sleeping)
+            });
      
         })
-        /*
-        PythonShell.run('../provadiocan.py', options, function (err, data) {
-            if (err) res.send(err);
-            console.log(data)
-            res.status(200).send(data)
-          });
-          */
+        pyshell.end((err, code, signal) => {
+            if(err) throw err
+            res.send(results)
+        })
     })
     
     //------------------------------------------------------/api/login-------------------------------------------//

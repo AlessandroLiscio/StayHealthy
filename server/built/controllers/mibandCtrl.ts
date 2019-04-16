@@ -47,6 +47,7 @@ export class MibandCtrl extends TableCtrl {
         for (let element of req.body) {
             // add only those element whoose date is more recente then the last last fetch date
             if (new Date(element.timestamp) > newLastFetchDate) {
+                console.log(element.timestamp)
                 this.params = [
                     req.query.patient_ssn,
                     element.timestamp,
