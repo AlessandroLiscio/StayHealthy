@@ -93,7 +93,7 @@ export class MibandCtrl extends TableCtrl {
             // scriptPath: './',
         }
         // define python shell variable
-        var pyshell = new PythonShell(process.env.RFSCRITPPATH, options);
+        var pyshell = new PythonShell(process.env.RFSCRIPTPATH, options);
         // array used to collect predicted sleeping modes
         var predictions: any[]
         // listen to every message printed from python script

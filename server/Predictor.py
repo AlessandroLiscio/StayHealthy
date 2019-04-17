@@ -2,7 +2,6 @@
 import pickle, sys, getopt
 import pandas as pd
 from pandas.io.json import json_normalize
-import json
 from joblib import load
 import numpy as np
 
@@ -57,13 +56,7 @@ def main(argv):
     regressor = load(mFile)
     # load data from csv file
     global df
-    iFile = iFile.replace('/','"')
-    #df = pd.read_json(iFile)
-    global j
-    j = json.loads(iFile)
-    #print(iFile)
-    #print(j)
-    df = pd.DataFrame(j)
+    df = pd.read_json(iFile)
     
     counter1 = 0
     for index, row in df.iterrows():
@@ -89,10 +82,9 @@ def main(argv):
     predicted_data = regressor.predict(input_data)
     
     # save data to csv
-    #input_df = pd.DataFrame(data=final_data, columns=features)
     predicted_df = pd.DataFrame(data=predicted_data, columns=['is_sleeping'])
     final_df = final_data.join(predicted_df, how='outer')
-    #final_df.to_csv(oFile, index = False)
     print(predicted_df.to_json(orient='records'))
+    
 if __name__ == '__main__':
     main(sys.argv[1:])
