@@ -64,16 +64,7 @@ export class MibandCtrl extends TableCtrl {
             this.error.details = ("No data more recent than: " + currentLastFetchDate + ".")
             return this.error
         }
-        data = await this.PredictSleep(data)
-        for (let element of data){
-            this.params = [
-                req.query.patient_ssn,
-                element.timestamp,
-                element.activity,
-                element.intensity,
-                element.heart_rate
-            ]
-        }
+        data = await this.PredictSleep(req, data)
         // else, proceed with the query
         this.result = await this.dbManager.postData(this.sql, data)
         console.log(this.result);
@@ -82,30 +73,39 @@ export class MibandCtrl extends TableCtrl {
         return this.result
     }
 
-    public async PredictSleep(data: any[]): Promise<any[]> {
+    public async PredictSleep(req: Request, data: any[]): Promise<any[]> {
+        // define python shell options
         var options = {
             args:
             [
                 process.env.RFMODELPATH,
-                './file.json',
+                JSON.stringify(req.body),
             ],
             pythonPath: process.env.PYTHONPATH,
             // scriptPath: './',
         }
+        // define python shell variable
         var pyshell = new PythonShell(process.env.RFSCRITPPATH, options);
-        var newData: any[]
+        // array used to collect predicted sleeping modes
+        var predictions: any[]
+        // listen to every message printed from python script
+        // and append the message to the predictions array
         pyshell.on('message', function (result) {
             result = JSON.parse(result)
             result.forEach(element => {
-                newData.push(element.is_sleeping)
+                predictions.push(element.is_sleeping)
             });
         })
+        // once the script has ended -> append predictions to data and return
         return new Promise((resolve, reject) => {
             pyshell.end((err,code,signal)=> {
+                // append predictions to data (from req.body)
                 for (let i = 0; i < data.length; i++) {
-                    data[i].is_sleeping = newData[i]
+                    data[i].is_sleeping = predictions[i]
                 }
+                // resolve -> return result
                 resolve(data)
+                // reject -> return error
                 if (err) reject(err)
             })
         })

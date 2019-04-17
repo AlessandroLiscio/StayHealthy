@@ -160,14 +160,6 @@ module.exports = function (app, passport) {
             result.forEach(element => {
                 results.push(element.is_sleeping)
             });
-     
-        })
-        pyshell.end((err, code, signal) => {
-            if(err) throw err
-            res.send(results)
-            var obj: any = {"a":1, "b": "b"};
-            obj.c = "c"
-            console.log(obj)
         })
     })
     
