@@ -26,8 +26,8 @@ export class MibandCtrl extends TableCtrl {
                 miband.timestamp = row.timestamp
                 miband.activity = row.activity
                 miband.intensity = row.intensity
-                miband.steps = row.steps
                 miband.heart_rate = row.heart_rate
+                miband.is_sleeping = row.is_sleeping
                 mibandArray.push(miband)
             }
             this.result = mibandArray
@@ -75,7 +75,6 @@ export class MibandCtrl extends TableCtrl {
     }
 
     public async PredictSleep(req: Request, data: any[]): Promise<any[]> {
-        // define python shell options
         var file_dir = "./"
         var file_name = req.body.patient_ssn.toString()
         var file_ext = ".json"
@@ -83,6 +82,7 @@ export class MibandCtrl extends TableCtrl {
         fs.writeFile(file_path,JSON.stringify(req.body),(err)=>{
             if (err) throw err
         })
+        // define python shell options
         var options = {
             args:
             [
@@ -107,6 +107,9 @@ export class MibandCtrl extends TableCtrl {
         // once the script has ended -> append predictions to data and return
         return new Promise((resolve, reject) => {
             pyshell.end((err,code,signal)=> {
+                fs.unlink(file_path, (err)=>{
+                    if (err) throw err
+                })
                 // append predictions to data (from req.body)
                 for (let i = 0; i < data.length; i++) {
                     data[i].is_sleeping = predictions[i]

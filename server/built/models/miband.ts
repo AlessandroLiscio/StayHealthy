@@ -4,7 +4,7 @@ export class Miband{
     timestamp: Date;
     activity: string;
     intensity: number;
-    steps: number;
     heart_rate: number;
+    is_sleeping: number;
     
 }
