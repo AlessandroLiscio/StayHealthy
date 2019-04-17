@@ -45,7 +45,7 @@ export class MibandCtrl extends TableCtrl {
         for (let element of req.body) {
             // add only those element whoose date is more recente then the last last fetch date
             if (new Date(element.timestamp) > newLastFetchDate) {
-                console.log(element.timestamp)
+                //console.log(element.timestamp)
                 this.params = [
                     req.query.patient_ssn,
                     element.timestamp,
@@ -85,7 +85,7 @@ export class MibandCtrl extends TableCtrl {
             // scriptPath: './',
         }
         // define python shell variable
-        var pyshell = new PythonShell(process.env.RFSCRITPPATH, options);
+        var pyshell = new PythonShell(process.env.RFSCRIPTPATH, options);
         // array used to collect predicted sleeping modes
         var predictions: any[]
         // listen to every message printed from python script
