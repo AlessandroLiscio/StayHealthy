@@ -53,11 +53,23 @@ def main(argv):
               ''')
         sys.exit(2)
     # load random forest regressor model from file
-    regressor = load(mFile)
+    regressor = pickle.load(open(mFile, 'rb'))
     # load data from csv file
     global df
     df = pd.read_json(iFile)
     
+    #adjust heart rate
+    last_valid = 80
+    for index, row in df.iterrows():
+        
+        if(row['heart_rate'] != 255.0):
+            last_valid = row['heart_rate']
+        else:
+            if(last_valid != 255):
+                df.at[index, 'heart_rate'] = last_valid
+                last_valid = 255
+    
+    #add time from last movement
     counter1 = 0
     for index, row in df.iterrows():
         if(index == 0):
@@ -77,13 +89,13 @@ def main(argv):
     
     #independent variables
     input_data = df.loc[:, features].values
-    final_data = df.loc[:, ['timestamp','intensity','heart_rate'] ]
     
+    global predicted_data
     predicted_data = regressor.predict(input_data)
     
     # save data to csv
+    global predicted_df
     predicted_df = pd.DataFrame(data=predicted_data, columns=['is_sleeping'])
-    final_df = final_data.join(predicted_df, how='outer')
     print(predicted_df.to_json(orient='records'))
     
 if __name__ == '__main__':

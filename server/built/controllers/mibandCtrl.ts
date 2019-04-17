@@ -3,7 +3,7 @@ import { Miband } from "../models/models"
 import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
 import { PythonShell } from 'python-shell'
-import { ENODEV } from "constants";
+import { ENODEV, POINT_CONVERSION_COMPRESSED } from "constants";
 import * as fs from 'fs';
 
 export class MibandCtrl extends TableCtrl {
@@ -76,11 +76,14 @@ export class MibandCtrl extends TableCtrl {
 
     public async PredictSleep(req: Request, data: any[]): Promise<any[]> {
         var file_dir = "./"
-        var file_name = req.body.patient_ssn.toString()
+        var file_name = req.query.patient_ssn.toString()
         var file_ext = ".json"
         var file_path = file_dir + file_name + file_ext
         fs.writeFile(file_path,JSON.stringify(req.body),(err)=>{
-            if (err) throw err
+            if (err) {
+                console.log(err)
+                throw err
+            }
         })
         // define python shell options
         var options = {
@@ -95,13 +98,13 @@ export class MibandCtrl extends TableCtrl {
         // define python shell variable
         var pyshell = new PythonShell(process.env.RFSCRIPTPATH, options);
         // array used to collect predicted sleeping modes
-        var predictions: any[]
+        var predictions: any[] = [];
         // listen to every message printed from python script
         // and append the message to the predictions array
         pyshell.on('message', function (result) {
-            result = JSON.parse(result)
+            result = JSON.parse(result);
             result.forEach(element => {
-                predictions.push(element.is_sleeping)
+                predictions.push(element.is_sleeping);
             });
         })
         // once the script has ended -> append predictions to data and return
@@ -112,12 +115,16 @@ export class MibandCtrl extends TableCtrl {
                 })
                 // append predictions to data (from req.body)
                 for (let i = 0; i < data.length; i++) {
-                    data[i].is_sleeping = predictions[i]
+                    data[i][5] = predictions[i]
                 }
                 // resolve -> return result
                 resolve(data)
                 // reject -> return error
-                if (err) reject(err)
+                if (err){
+                    console.log(err);
+                    reject(err);
+                    
+                } 
             })
         })
         
