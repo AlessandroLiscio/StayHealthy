@@ -4,6 +4,7 @@ import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
 import { PythonShell } from 'python-shell'
 import { ENODEV } from "constants";
+import * as fs from 'fs';
 
 export class MibandCtrl extends TableCtrl {
 
@@ -45,7 +46,7 @@ export class MibandCtrl extends TableCtrl {
         for (let element of req.body) {
             // add only those element whoose date is more recente then the last last fetch date
             if (new Date(element.timestamp) > newLastFetchDate) {
-                console.log(element.timestamp)
+                // console.log(element.timestamp)
                 this.params = [
                     req.query.patient_ssn,
                     element.timestamp,
@@ -75,11 +76,18 @@ export class MibandCtrl extends TableCtrl {
 
     public async PredictSleep(req: Request, data: any[]): Promise<any[]> {
         // define python shell options
+        var file_dir = "./"
+        var file_name = req.body.patient_ssn.toString()
+        var file_ext = ".json"
+        var file_path = file_dir + file_name + file_ext
+        fs.writeFile(file_path,JSON.stringify(req.body),(err)=>{
+            if (err) throw err
+        })
         var options = {
             args:
             [
                 process.env.RFMODELPATH,
-                JSON.stringify(req.body),
+                file_path,
             ],
             pythonPath: process.env.PYTHONPATH,
             // scriptPath: './',
