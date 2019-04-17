@@ -3,7 +3,7 @@ import { Miband } from "../models/models"
 import { TableCtrl } from "./tableCtrl"
 import { CustomError } from "../models/customError"
 import { PythonShell } from 'python-shell'
-import { ENODEV } from "constants";
+import { ENODEV, POINT_CONVERSION_COMPRESSED } from "constants";
 import * as fs from 'fs';
 
 export class MibandCtrl extends TableCtrl {
@@ -65,7 +65,9 @@ export class MibandCtrl extends TableCtrl {
             this.error.details = ("No data more recent than: " + currentLastFetchDate + ".")
             return this.error
         }
+        console.log(data)
         data = await this.PredictSleep(req, data)
+        console.log('prcoilclero0', data)
         // else, proceed with the query
         this.result = await this.dbManager.postData(this.sql, data)
         console.log(this.result);
@@ -80,8 +82,12 @@ export class MibandCtrl extends TableCtrl {
         var file_name = req.body.patient_ssn.toString()
         var file_ext = ".json"
         var file_path = file_dir + file_name + file_ext
+        console.log(file_path)
         fs.writeFile(file_path,JSON.stringify(req.body),(err)=>{
-            if (err) throw err
+            if (err) {
+                console.log(err)
+                throw err
+            }
         })
         var options = {
             args:
@@ -99,6 +105,7 @@ export class MibandCtrl extends TableCtrl {
         // listen to every message printed from python script
         // and append the message to the predictions array
         pyshell.on('message', function (result) {
+            console.log("Ciaooooo")
             result = JSON.parse(result)
             result.forEach(element => {
                 predictions.push(element.is_sleeping)
@@ -107,6 +114,7 @@ export class MibandCtrl extends TableCtrl {
         // once the script has ended -> append predictions to data and return
         return new Promise((resolve, reject) => {
             pyshell.end((err,code,signal)=> {
+                console.log("banaeneeee")
                 // append predictions to data (from req.body)
                 for (let i = 0; i < data.length; i++) {
                     data[i].is_sleeping = predictions[i]
@@ -114,7 +122,11 @@ export class MibandCtrl extends TableCtrl {
                 // resolve -> return result
                 resolve(data)
                 // reject -> return error
-                if (err) reject(err)
+                if (err){
+                    console.log(err);
+                    reject(err);
+                    
+                } 
             })
         })
         
