@@ -86,6 +86,7 @@ export abstract class GraphDrawer {
     this.time = [];
     this.answers = [];
     this.questions = [];
+    this.shapes = [];
   }
   drawGraph() {
 
@@ -149,6 +150,7 @@ export abstract class GraphDrawer {
           this.activity.push(activity.intensity);
           this.handleHeartRate(activity.heart_rate);
         });
+        this.addShapes(res);
         this.drawGraph();
       },
         error => {
@@ -192,6 +194,7 @@ export abstract class GraphDrawer {
     this.heart = [];
     this.questions = [];
     this.answers = [];
+    this.shapes = [];
   }
 
   private handleHeartRate(heart: number) {
@@ -226,15 +229,23 @@ export abstract class GraphDrawer {
       let x1 = data[counter].timestamp;
       let is_sleeping = data[counter].is_sleeping;
       let j = counter + 1;
-      //increase counter while data has same mode
-      while(data[j].is_sleeping == is_sleeping && j < data.length){
-        j++;
+      if(j < data.length){
+        //increase counter while data has same mode
+        while(j < data.length - 1 && data[j].is_sleeping == is_sleeping){
+          j++;
+        }
+        //data at position j has different mode
+        let x2 = data[j].timestamp;
+        this.buildShape(x1, x2, is_sleeping);
+        console.log(j);
+        console.log(data[j]);
+        x1 = data[j].timestamp;
+        counter = j;
       }
-      //data at position j has different mode
-      let x2 = data[j - 1].timestamp;
-      this.buildShape(x1, x2, is_sleeping);
-      x1 = data[j].timestamp;
-      counter = j;
+      else{
+        let x2 = data[data.length - 1].timestamp;
+        this.buildShape(x1, x2, is_sleeping);
+      }
     }
   }
   private buildShape(x0: string, x1: string, is_sleeping: number){
