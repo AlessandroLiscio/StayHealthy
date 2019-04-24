@@ -237,8 +237,6 @@ export abstract class GraphDrawer {
         //data at position j has different mode
         let x2 = data[j].timestamp;
         this.buildShape(x1, x2, is_sleeping);
-        console.log(j);
-        console.log(data[j]);
         x1 = data[j].timestamp;
         counter = j;
       }
