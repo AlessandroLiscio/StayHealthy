@@ -69,6 +69,29 @@ def main(argv):
                 df.at[index, 'heart_rate'] = last_valid
                 last_valid = 255
     
+    # sliding windows to calculate the heart_rate features
+    window_size = 10
+    half_window = int(window_size/2)
+    df['heart_std'] = 0
+    df['heart_max'] = 0
+    for i in range(0, len(df)):
+        #set start index and last index
+        start_index = i - half_window
+        last_index = i + half_window
+        if start_index < 0:
+            start_index = 0
+        if last_index > len(df) - 1:
+            last_index = len(df) - 1
+        window_signal = np.array(df['heart_rate'][(start_index):(last_index)])
+        max_window = np.nanmax(window_signal)
+        min_window = np.nanmin(window_signal)
+        mean_window = np.nanmean(window_signal)
+        std_window = np.nanstd(window_signal)
+        df.at[i,'heart_min'] = min_window
+        df.at[i,'heart_max'] = max_window
+        df.at[i,'heart_mean'] = mean_window
+        df.at[i,'heart_std'] = std_window
+    
     #add time from last movement
     counter1 = 0
     for index, row in df.iterrows():
@@ -83,8 +106,8 @@ def main(argv):
     
     #features array
     features = ['intensity',
-                'heart_rate',
-                'time_from_last_movement'
+                'heart_max',
+                'heart_mean'
                 ]
     
     #independent variables
