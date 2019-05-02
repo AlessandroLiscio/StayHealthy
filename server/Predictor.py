@@ -4,6 +4,7 @@ import pandas as pd
 from pandas.io.json import json_normalize
 from joblib import load
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 def main(argv):
     
@@ -53,7 +54,7 @@ def main(argv):
               ''')
         sys.exit(2)
     # load random forest regressor model from file
-    regressor = pickle.load(open(mFile, 'rb'))
+    classifier = pickle.load(open(mFile, 'rb'))
     # load data from csv file
     global df
     df = pd.read_json(iFile)
@@ -111,10 +112,12 @@ def main(argv):
                 ]
     
     #independent variables
+    global input_data
     input_data = df.loc[:, features].values
     
     global predicted_data
-    predicted_data = regressor.predict(input_data)
+    #data = StandardScaler().fit_transform(input_data)
+    predicted_data = classifier.predict(input_data)
     
     # save data to csv
     global predicted_df

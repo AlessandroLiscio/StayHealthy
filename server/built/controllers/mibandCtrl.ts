@@ -103,6 +103,7 @@ export class MibandCtrl extends TableCtrl {
         // and append the message to the predictions array
         pyshell.on('message', function (result) {
             result = JSON.parse(result);
+            console.log(result)
             result.forEach(element => {
                 predictions.push(element.is_sleeping);
             });
