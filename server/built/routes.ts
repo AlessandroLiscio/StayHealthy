@@ -545,7 +545,8 @@ module.exports = function (app, passport) {
                     case 'patient': {
                         switch (route) {
                             case '/api/message': {
-                                if (await checkPatientDoctor(req.query.receiver, req, res)) { return next() }
+                                console.log(req.query)
+                                if (await checkPatientDoctor(req.body.receiver, req, res)) { return next() }
                                 return
                             }
                             case '/api/miband': {
@@ -566,7 +567,7 @@ module.exports = function (app, passport) {
                     case 'doctor': {
                         switch (route) {
                             case '/api/message': {
-                                if (await findInDoctorPatientsList(req.query.receiver, req, res)) { return next() }
+                                if (await findInDoctorPatientsList(req.body.receiver, req, res)) { return next() }
                                 return
                             }
                             default: {
